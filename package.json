@@ -1,0 +1,26 @@
+{
+  "name": "minescript",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MineScript – robotszimulátor webes játék (Dusza Árpád verseny, 2026/2027, I. forduló)",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build": "npm run build -w @minescript/shared && npm run build -w @minescript/server && npm run build -w @minescript/client",
+    "dev": "npm run build -w @minescript/shared && concurrently -n api,web -c yellow,cyan \"npm run dev -w @minescript/server\" \"npm run dev -w @minescript/client\"",
+    "start": "npm run start -w @minescript/server",
+    "test": "npm run test -w @minescript/shared",
+    "typecheck": "npm run build -w @minescript/shared && npm run typecheck -w @minescript/server && npm run typecheck -w @minescript/client",
+    "db:init": "npm run build -w @minescript/shared && npm run db:init -w @minescript/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

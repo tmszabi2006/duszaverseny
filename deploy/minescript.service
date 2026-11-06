@@ -1,0 +1,30 @@
+[Unit]
+Description=MineScript bányászrobot-szimulátor (Node.js API + SPA)
+Documentation=file:///opt/minescript/README.md
+After=network-online.target mysql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=minescript
+Group=minescript
+WorkingDirectory=/opt/minescript
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /opt/minescript/server/dist/index.js
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+KillSignal=SIGTERM
+
+# Minimalizált jogosultságok: az alkalmazás csak olvas, a HTTP-portot figyeli.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

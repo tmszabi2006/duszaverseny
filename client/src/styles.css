@@ -1578,9 +1578,9 @@ input[type='radio'] {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 0.7px, transparent 0.7px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 0.7px, transparent 0.7px);
   background-size: 8px 8px;
-  opacity: 0.32;
+  opacity: 0.15;
 }
 
 .map-cell-wall {
@@ -1600,27 +1600,25 @@ input[type='radio'] {
 }
 
 .map-cell-hidden {
-  background:
-    radial-gradient(circle at 50% 50%, rgba(70, 91, 108, 0.16), transparent 62%),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 8px),
-    #0a1219;
+  background: #04070b;
 }
 
-/* Nem felderített, de halványan megsejthető mezők (alapmód). */
+/* Nem felderített, de alapértelmezésben halványan látszó mezők (fal, arany). */
 .map-cell-faint {
-  background-color: #05080d;
+  background-color: #0a141f;
 }
 
 .map-cell-faint-wall {
   background:
-    radial-gradient(circle at 50% 50%, rgba(59, 74, 87, 0.13), transparent 66%),
-    #05080d;
+    radial-gradient(circle at 50% 50%, rgba(110, 130, 150, 0.32), transparent 72%),
+    #0a141f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .map-cell-faint-gold {
   background:
-    radial-gradient(circle at 50% 55%, rgba(245, 179, 1, 0.12), transparent 64%),
-    #05080d;
+    radial-gradient(circle at 50% 55%, rgba(245, 179, 1, 0.24), transparent 70%),
+    #0a141f;
 }
 
 .panel-header-actions {

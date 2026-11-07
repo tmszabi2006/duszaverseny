@@ -63,11 +63,8 @@ export function MapView({
       {activeCells.map((row, rowIndex) =>
         row.map((kind, colIndex) => {
           const hidden = discovered ? !discovered[rowIndex]?.[colIndex] : false;
-          const showFaint = hidden && !fullDark && kind !== 'empty';
           const cellClassName = hidden
-            ? showFaint
-              ? `map-cell-hidden map-cell-faint map-cell-faint-${kind}`
-              : 'map-cell-hidden'
+            ? `map-cell-hidden${fullDark ? ' map-cell-hidden-dark' : ''}`
             : `map-cell-${kind}`;
           return (
             <div

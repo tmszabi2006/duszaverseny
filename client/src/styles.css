@@ -1570,18 +1570,15 @@ input[type='radio'] {
 }
 
 .map-cell-hidden {
-  background: #04070b;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  background: #05070b;
 }
 
-.map-cell-hidden::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 0.7px, transparent 0.7px);
-  background-size: 8px 8px;
-  opacity: 0.15;
+/* Teljes sötétség: felfedezetlen mezők teljesen feketek, semmi sem látszik rajtuk. */
+.map-cell-hidden-dark {
+  background: #000000;
 }
+
+/* Nem felderített mezők: feketekkel rácsokkal, nincs halvány fal/arany. */
 
 .map-cell-wall {
   background:
@@ -1597,28 +1594,6 @@ input[type='radio'] {
   background:
     radial-gradient(circle at 50% 55%, rgba(245, 179, 1, 0.21), transparent 62%),
     linear-gradient(145deg, #15212c, #0e1720);
-}
-
-.map-cell-hidden {
-  background: #04070b;
-}
-
-/* Nem felderített, de alapértelmezésben halványan látszó mezők (fal, arany). */
-.map-cell-faint {
-  background-color: #0a141f;
-}
-
-.map-cell-faint-wall {
-  background:
-    radial-gradient(circle at 50% 50%, rgba(110, 130, 150, 0.32), transparent 72%),
-    #0a141f;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.map-cell-faint-gold {
-  background:
-    radial-gradient(circle at 50% 55%, rgba(245, 179, 1, 0.24), transparent 70%),
-    #0a141f;
 }
 
 .panel-header-actions {

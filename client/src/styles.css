@@ -1608,6 +1608,7 @@ input[type='radio'] {
 
 .gold-nugget {
   position: absolute;
+  top: 50%;
   left: 50%;
   width: 38%;
   height: 38%;
@@ -1664,7 +1665,12 @@ input[type='radio'] {
   width: 72%;
   height: 72%;
   color: var(--robot);
-  filter: drop-shadow(0 0 6px rgba(88, 166, 255, 0.85));
+  fill: currentColor;
+  stroke: #e8f7ff;
+  stroke-width: 0.65;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(88, 166, 255, 0.95))
+    drop-shadow(0 0 12px rgba(88, 166, 255, 0.45));
 }
 
 .map-editor-grid {

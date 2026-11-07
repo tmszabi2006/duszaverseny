@@ -78,7 +78,7 @@ export function ProgramEditor({
   readOnly = false,
   currentLine = null,
   errorLine = null,
-  ariaLabel = 'MineScript szerkesztő',
+  ariaLabel = 'MineScript program',
 }: ProgramEditorProps) {
   const gutterRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLPreElement>(null);

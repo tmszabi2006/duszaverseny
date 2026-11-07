@@ -40,11 +40,11 @@ function MineArt({ seed = 0 }: { seed?: number }) {
   );
 }
 
-function MapCard({ map, index }: { map: MapSummary; index: number }) {
+function MapCard({ map }: { map: MapSummary }) {
   return (
     <article className="map-card">
       <div className="map-card-media">
-        <MineArt seed={map.id + index} />
+        <MineArt seed={map.id} />
         <div className="map-badges">
           {map.isOwner ? (
             <span className="badge badge-owner">Saját</span>
@@ -185,6 +185,16 @@ export function MapsPage() {
             placeholder="Keresés név, leírás vagy készítő szerint…"
             aria-label="Keresés a térképek között"
           />
+          {search && (
+            <button
+              type="button"
+              className="search-clear"
+              onClick={() => setSearch('')}
+              aria-label="Keresés törlése"
+            >
+              ×
+            </button>
+          )}
         </div>
         <label className="toggle-field">
           <input
@@ -234,8 +244,8 @@ export function MapsPage() {
         </div>
       ) : (
         <div className="map-grid">
-          {filtered.map((map, index) => (
-            <MapCard key={map.id} map={map} index={index} />
+          {filtered.map((map) => (
+            <MapCard key={map.id} map={map} />
           ))}
         </div>
       )}

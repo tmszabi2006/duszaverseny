@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS maps (
   PRIMARY KEY (id),
   KEY idx_maps_owner (owner_id),
   KEY idx_maps_public (is_public),
+  KEY idx_maps_public_updated (is_public, updated_at),
+  KEY idx_maps_owner_updated (owner_id, updated_at),
   CONSTRAINT fk_maps_owner FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -42,6 +44,7 @@ CREATE TABLE IF NOT EXISTS runs (
   created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_runs_map_score (map_id, gold DESC, steps ASC),
+  KEY idx_runs_map_user_score (map_id, user_id, gold DESC, steps ASC, created_at ASC, id ASC),
   KEY idx_runs_user_created (user_id, created_at DESC),
   CONSTRAINT fk_runs_map FOREIGN KEY (map_id) REFERENCES maps (id) ON DELETE CASCADE,
   CONSTRAINT fk_runs_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE

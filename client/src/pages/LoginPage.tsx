@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ApiError } from '../api';
 import { useAuth } from '../auth';
+import { PickaxeLogo } from '../components/Logo';
 
 export function LoginPage() {
   const { user, loading, login, register } = useAuth();
@@ -86,7 +87,7 @@ export function LoginPage() {
         <div className="login-hero-inner">
           <div className="brand brand-large">
             <span className="brand-icon" aria-hidden="true">
-              ⛏
+              <PickaxeLogo />
             </span>
             <span className="brand-text">
               <strong>MineScript</strong>

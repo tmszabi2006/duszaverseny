@@ -11,16 +11,23 @@ export const pool = mysql.createPool({
   password: config.db.password,
   database: config.db.database,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: config.db.poolSize,
   queueLimit: 0,
   charset: 'utf8mb4',
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+  maxPreparedStatements: 200,
 });
 
+/**
+ * Paraméterezett lekérdezés. A mysql2 előkészített utasításokat használ,
+ * így az értékek nem kerülnek közvetlenül az SQL szövegébe.
+ */
 export async function queryRows<T extends RowDataPacket>(
   sql: string,
   params: SqlParameter[] = [],
 ): Promise<T[]> {
-  const [rows] = await pool.query<T[]>(sql, params);
+  const [rows] = await pool.execute<T[]>(sql, params);
   return rows;
 }
 

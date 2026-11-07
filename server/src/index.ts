@@ -1,3 +1,4 @@
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import fs from 'node:fs';
@@ -42,8 +43,26 @@ app.use(
   }),
 );
 
+// A tömörítés a JSON API és a statikus szöveges erőforrások méretét csökkenti.
+app.use(
+  compression({
+    threshold: 1024,
+    // A gyorsítótárazott, már tömörített válaszokat nem tömörítjük újra.
+    filter: (req, res) => {
+      if (res.getHeader('Content-Encoding')) return false;
+      return compression.filter(req, res);
+    },
+  }),
+);
+
 app.use(express.json({ limit: '256kb' }));
 app.use(cookieParser());
+
+// Az API válaszai mindig friss adatot mutassanak, ne a böngésző gyorsítótárát.
+app.use('/api', (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 app.get(
   '/api/health',
@@ -73,8 +92,20 @@ if (fs.existsSync(clientIndex)) {
       maxAge: config.isProduction ? '1y' : 0,
       immutable: config.isProduction,
       setHeaders(res, filePath) {
-        if (filePath.endsWith('index.html')) {
+        const normalized = filePath.replace(/\\/g, '/');
+
+        if (normalized.endsWith('index.html')) {
           res.setHeader('Cache-Control', 'no-cache');
+          return;
+        }
+
+        // Csak a Vite által hash-elt build-eszközök kapnak hosszú, változatlan
+        // gyorsítótárazást. A többi fájl (pl. favicon) rövidebb élettartamú.
+        if (!normalized.includes('/assets/')) {
+          res.setHeader(
+            'Cache-Control',
+            config.isProduction ? 'public, max-age=3600' : 'no-cache',
+          );
         }
       },
     }),
@@ -137,6 +168,10 @@ app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
 const server = app.listen(config.port, () => {
   console.log(`MineScript szerver fut: http://127.0.0.1:${config.port} (${config.nodeEnv})`);
 });
+
+// Reverse proxy mögött a hosszabb keep-alive csökkenti az új kapcsolatok számát.
+server.keepAliveTimeout = 65_000;
+server.headersTimeout = 66_000;
 
 let shuttingDown = false;
 

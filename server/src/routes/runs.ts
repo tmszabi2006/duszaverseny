@@ -3,7 +3,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { requireAuth } from '../auth.js';
 import { HttpError, asyncHandler, parseIdParam } from '../http.js';
-import { requireAccessibleMap } from '../repositories/maps.js';
+import { requireAccessibleMap, requireAccessibleMapContent } from '../repositories/maps.js';
 import {
   findRunById,
   insertRun,
@@ -56,7 +56,7 @@ runsRouter.post(
     const mapId = readMapId(req.body);
     const source = readProgramSource(req.body);
 
-    const map = await requireAccessibleMap(mapId, user.id);
+    const map = await requireAccessibleMapContent(mapId, user.id);
 
     const parsedProgram = parseProgram(source);
     if (!parsedProgram.ok) {
@@ -89,7 +89,8 @@ runsRouter.post(
       steps: result.steps,
       errorCode: result.error?.code ?? null,
       errorLine: result.error?.line ?? null,
-      errorMessage: result.error?.message ?? null,
+      // Az adatbázis-oszlop 500 karakter, ezért itt is csonkoljuk.
+      errorMessage: result.error?.message?.slice(0, 500) ?? null,
     });
 
     const stored = await findRunById(runId);

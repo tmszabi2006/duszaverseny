@@ -1,8 +1,7 @@
 import { countGold, formatMap, parseMap } from '@minescript/shared';
 import { Router } from 'express';
-import type { RowDataPacket } from 'mysql2';
 import { requireAuth } from '../auth.js';
-import { execute, queryRows } from '../db.js';
+import { execute } from '../db.js';
 import { HttpError, asyncHandler, bodyString, parseIdParam } from '../http.js';
 import {
   findMapById,
@@ -22,10 +21,6 @@ interface MapInput {
   width: number;
   height: number;
   goldCount: number;
-}
-
-interface RunCountRow extends RowDataPacket {
-  count: number;
 }
 
 function readMapInput(body: unknown): MapInput {
@@ -129,18 +124,12 @@ mapsRouter.put(
     const input = readMapInput(req.body);
     const dataChanged = input.canonicalData !== existing.data;
 
-    if (dataChanged) {
-      const counts = await queryRows<RunCountRow>(
-        'SELECT COUNT(*) AS `count` FROM runs WHERE map_id = ?',
-        [id],
+    if (dataChanged && existing.runCount > 0) {
+      throw new HttpError(
+        409,
+        'Ezen a térképen már születtek eredmények, ezért a pálya tartalma nem módosítható. Hozz létre új térképet a módosított változatból.',
+        'MAP_HAS_RUNS',
       );
-      if ((counts[0]?.count ?? 0) > 0) {
-        throw new HttpError(
-          409,
-          'Ezen a térképen már születtek eredmények, ezért a pálya tartalma nem módosítható. Hozz létre új térképet a módosított változatból.',
-          'MAP_HAS_RUNS',
-        );
-      }
     }
 
     await execute(

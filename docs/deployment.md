@@ -83,6 +83,8 @@ DB_PORT=3306
 DB_USER=minescript
 DB_PASSWORD=ERŐS_JELSZÓ
 DB_NAME=minescript
+# Egyidejű MySQL kapcsolatok száma (2–50, alapértelmezés: 10).
+DB_POOL_SIZE=10
 
 # Csak akkor kell, ha a db:init rendszergazdai kapcsolatot igényel:
 # DB_ADMIN_USER=root
@@ -110,7 +112,8 @@ sudo -u minescript -H bash -lc 'cd /opt/minescript && npm run db:init'
 ```
 
 Ez létrehozza a táblákat, az öt rendszer-térképet és beállítja az induló játékkörnyezetet.
-A parancs újrafuttatható; a meglévő rendszer-térképeket nem duplikálja.
+A parancs újrafuttatható; a meglévő rendszer-térképeket nem duplikálja, és a hiányzó
+teljesítményindexeket (ranglista, térképlista) is pótolja a meglévő adatbázisban.
 
 ## 5. systemd szolgáltatás
 

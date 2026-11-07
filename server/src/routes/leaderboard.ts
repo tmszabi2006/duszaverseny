@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth.js';
 import { asyncHandler, parseIdParam } from '../http.js';
-import { mapSummary, requireAccessibleMap } from '../repositories/maps.js';
+import { mapSummary, requireAccessibleMapSummary } from '../repositories/maps.js';
 import { leaderboardForMap } from '../repositories/runs.js';
 
 export const leaderboardRouter = Router();
@@ -13,7 +13,7 @@ leaderboardRouter.get(
   asyncHandler(async (req, res) => {
     const user = req.user!;
     const id = parseIdParam(req.params.id);
-    const map = await requireAccessibleMap(id, user.id);
+    const map = await requireAccessibleMapSummary(id, user.id);
     const rows = await leaderboardForMap(id);
 
     res.json({

@@ -46,6 +46,7 @@ DB_PORT=3306
 DB_USER=minescript
 DB_PASSWORD=helyi-jelszo
 DB_NAME=minescript
+DB_POOL_SIZE=10
 JWT_SECRET=legalabb-32-karakteres-veletlen-titok
 COOKIE_SECURE=false
 TRUST_PROXY=0

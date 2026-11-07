@@ -8,6 +8,13 @@ import { HttpError, asyncHandler } from '../http.js';
 
 const USERNAME_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{2,23}$/;
 
+/**
+ * Ismert, soha nem egyező bcrypt-hash: a nem létező felhasználónál is
+ * lefuttatjuk az összehasonlítást, hogy a válaszidő ne árulja el, létezik-e
+ * a felhasználónév.
+ */
+const DUMMY_PASSWORD_HASH = '$2b$12$oBTq0qkq1a1bR.fF2Kraa.wTszKoRDHSTZLjM2mIutku6ZXAfiOwC';
+
 interface UserRow extends RowDataPacket {
   id: number;
   username: string;
@@ -102,12 +109,21 @@ authRouter.post(
 
     const username = rawUsername.trim();
     const password = rawPassword;
+    if (!username || username.length > 24 || password.length > 200) {
+      throw new HttpError(401, 'Hibás felhasználónév vagy jelszó.', 'INVALID_CREDENTIALS');
+    }
+
     const rows = await queryRows<UserRow>(
       'SELECT id, username, password_hash, created_at FROM users WHERE username_lower = ? LIMIT 1',
       [username.toLowerCase()],
     );
     const row = rows[0];
-    if (!row || !(await bcrypt.compare(password, row.password_hash))) {
+    const passwordMatches = await bcrypt.compare(
+      password,
+      row?.password_hash ?? DUMMY_PASSWORD_HASH,
+    );
+
+    if (!row || !passwordMatches) {
       throw new HttpError(401, 'Hibás felhasználónév vagy jelszó.', 'INVALID_CREDENTIALS');
     }
 

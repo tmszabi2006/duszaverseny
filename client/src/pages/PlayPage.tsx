@@ -20,6 +20,7 @@ import {
   useRef,
   useState,
   type ChangeEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ApiError, api } from '../api';
@@ -565,11 +566,20 @@ export function PlayPage() {
   const isRunning = status === 'running';
   const completed = status === 'finished';
   const collectedAll = sim.gold === map.goldCount && map.goldCount > 0;
+  const progress =
+    map.goldCount > 0 ? Math.min(100, Math.round((sim.gold / map.goldCount) * 100)) : 0;
   const serverMismatch =
     serverResult !== null && (serverResult.gold !== sim.gold || serverResult.steps !== sim.steps);
 
+  function handlePageKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      event.preventDefault();
+      handleRun();
+    }
+  }
+
   return (
-    <div className="page play-page">
+    <div className="page play-page" onKeyDown={handlePageKeyDown}>
       <nav className="breadcrumb" aria-label="Morzsamenü">
         <Link to="/">Térképek</Link>
         <span aria-hidden="true">/</span>
@@ -643,6 +653,41 @@ export function PlayPage() {
 
             <div className="map-stage">
               <MapView map={gameMap} robot={sim.robot} cells={sim.cells} discovered={sim.discovered} />
+            </div>
+
+            <div className="map-legend" aria-label="Térkép jelmagyarázat">
+              <span>
+                <span className="legend-dot legend-empty" aria-hidden="true" /> Járat
+              </span>
+              <span>
+                <span className="legend-dot legend-wall" aria-hidden="true" /> Fal
+              </span>
+              <span>
+                <span className="legend-dot legend-gold" aria-hidden="true" /> Arany
+              </span>
+              <span>
+                <span className="legend-dot legend-robot" aria-hidden="true" /> Robot
+              </span>
+              <span className="legend-note">A feltérképezetlen mezők sötétek maradnak.</span>
+            </div>
+
+            <div className="progress-block">
+              <div className="progress-label">
+                <span>Arany begyűjtése</span>
+                <span>
+                  {sim.gold} / {map.goldCount} · {progress}%
+                </span>
+              </div>
+              <div
+                className="progress-track"
+                role="progressbar"
+                aria-valuenow={sim.gold}
+                aria-valuemin={0}
+                aria-valuemax={map.goldCount}
+                aria-label="Összegyűjtött arany aránya"
+              >
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
+              </div>
             </div>
 
             <div className="run-stats">
@@ -818,6 +863,7 @@ export function PlayPage() {
                 className="btn btn-primary btn-run"
                 onClick={handleRun}
                 disabled={isRunning}
+                title="Futtatás (Ctrl + Enter)"
               >
                 {isRunning ? 'Futás folyamatban…' : completed ? 'Újrafuttatás' : 'Futtatás'}
               </button>
@@ -849,6 +895,11 @@ export function PlayPage() {
                 </select>
               </label>
             </div>
+
+            <p className="shortcut-hint">
+              Tipp: a <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (macon <kbd>⌘</kbd> + <kbd>Enter</kbd>)
+              azonnal elindítja a programot.
+            </p>
 
             <div className={`verification-row verification-${submission}`}>
               {submission === 'idle' && (

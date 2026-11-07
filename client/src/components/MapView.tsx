@@ -49,6 +49,7 @@ export function MapView({
         gridTemplateColumns: `repeat(${width}, minmax(0, 1fr))`,
         aspectRatio: `${width} / ${height}`,
         '--cols': width,
+        '--rows': height,
       } as CSSProperties}
       role={interactive ? 'group' : 'img'}
       aria-label={

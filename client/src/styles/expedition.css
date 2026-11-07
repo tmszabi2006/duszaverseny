@@ -166,6 +166,16 @@ input[type='text']:focus,input[type='password']:focus,input[type='search']:focus
 .mine-art-6::before { background-position: 0 100%; }
 .mine-art-7::before { background-position: 50% 100%; }
 .mine-art-8::before { background-position: 100% 100%; }
+.mine-art-9,.mine-art-10,.mine-art-11,.mine-art-12,.mine-art-13,.mine-art-14 { background: none; }
+.mine-art-9::before,.mine-art-10::before,.mine-art-11::before,.mine-art-12::before,.mine-art-13::before,.mine-art-14::before {
+  content: ''; position: absolute; left: 0; top: 50%; width: 100%; aspect-ratio: 1;
+  transform: translateY(-50%); background: url('/assets/mine-atlas-depths.webp') 0 0 / 300% 200%;
+}
+.mine-art-10::before { background-position: 50% 0; }
+.mine-art-11::before { background-position: 100% 0; }
+.mine-art-12::before { background-position: 0 100%; }
+.mine-art-13::before { background-position: 50% 100%; }
+.mine-art-14::before { background-position: 100% 100%; }
 .map-card:hover .mine-art { transform: scale(1.045); }
 .map-card-media::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 55%,#25283090); }
 .map-badges { position: absolute; inset: 12px 12px auto; z-index: 1; display: flex; gap: 6px; }
@@ -428,4 +438,22 @@ input[type='text']:focus,input[type='password']:focus,input[type='search']:focus
 }
 
 /* Keep snow around the controls, never over the working surface. */
+.select-menu { position: relative; min-width: 0; }
+.login-brand-row { z-index: 6; }
+.select-trigger { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 7px; background: var(--bg-elevated); color: var(--text); text-align: left; cursor: pointer; font-size: 13px; }
+.select-trigger > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select-trigger:disabled { opacity: .55; cursor: default; }
+.select-trigger[aria-expanded='true'] { border-color: var(--accent); }
+.select-chevron { color: var(--accent); }
+.select-options { position: absolute; z-index: 50; top: calc(100% + 8px); right: 0; min-width: 100%; width: max-content; max-width: min(380px,calc(100vw - 48px)); max-height: 300px; overflow-y: auto; padding: 6px; border: 1px solid var(--border-strong); border-radius: 10px; background: #20242d; box-shadow: 0 14px 30px #0007; }
+.select-option { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 11px 12px; border-radius: 6px; color: var(--text); cursor: pointer; }
+.select-option strong { display: block; font-size: 13px; font-weight: 600; }
+.select-option small { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5; color: var(--text-soft); }
+.select-option.is-active { background: #ffffff0d; }
+.select-option[aria-selected='true'] { color: var(--accent); background: var(--accent-soft); }
+.weather-control .select-trigger { min-height: 32px; padding: 3px 0 3px 2px; border: 0; background: transparent; font-size: 12px; }
+.weather-control .select-options { min-width: 240px; }
+.program-toolbar > .select-menu { flex: 1 1 100%; width: 100%; }
+.program-toolbar .select-options { left: 0; right: auto; }
+.program-panel:has(.select-options) { z-index: 6; position: relative; }
 .expedition-hero, .play-layout, .editor-layout, .profile-stats, .run-list, .map-card { position: relative; z-index: 5; }

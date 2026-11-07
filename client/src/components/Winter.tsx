@@ -1,3 +1,4 @@
+import { SelectMenu } from './SelectMenu';
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameIcon } from './GameIcon';
@@ -7,12 +8,14 @@ const WeatherContext = createContext<{ weather: Weather; setWeather: (value: Wea
 
 export function WeatherControl() {
   const { weather, setWeather } = useContext(WeatherContext);
-  return <label className="weather-control">
+  return <div className="weather-control">
     <GameIcon name="snow" />
-    <select value={weather} onChange={event => setWeather(event.target.value as Weather)} aria-label="Havazás">
-      <option value="off">Hó nélkül</option><option value="soft">Finom hó</option><option value="snow">Sűrű hóesés</option>
-    </select>
-  </label>;
+    <SelectMenu value={weather} onChange={value => setWeather(value as Weather)} label="Havazás" showChevron={false} options={[
+      { value: 'off', label: 'Hó nélkül', description: 'Tiszta, nyugodt égbolt' },
+      { value: 'soft', label: 'Finom hó', description: 'Lassan szálló, ritka pelyhek' },
+      { value: 'snow', label: 'Sűrű hóesés', description: 'Nagy pelyhek, erősebb szél' },
+    ]} />
+  </div>;
 }
 
 export function WinterProvider({ children }: { children: ReactNode }) {

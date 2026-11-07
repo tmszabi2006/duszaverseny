@@ -1,3 +1,4 @@
+import { SelectMenu } from '../components/SelectMenu';
 import {
   DIRECTION_LABELS_HU,
   MAX_PROCESSED_LINES,
@@ -27,7 +28,7 @@ import { ApiError, api } from '../api';
 import { Leaderboard } from '../components/Leaderboard';
 import { MapView } from '../components/MapView';
 import { ProgramEditor } from '../components/ProgramEditor';
-import { loadDraft, saveDraft } from '../drafts';
+import { loadDraft, saveDraft, loadCustomDraft, saveCustomDraft } from '../drafts';
 import { defaultProgramForMap, samplesForMap } from '../samples';
 import type { LeaderboardEntry, MapDetail, Run, RunResponse } from '../types';
 import { downloadText, errorMessage, slugify } from '../utils';
@@ -195,6 +196,7 @@ export function PlayPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [source, setSource] = useState('');
+  const [selectedSample, setSelectedSample] = useState('__custom');
   const [sourceMapId, setSourceMapId] = useState<number | null>(null);
   const [parseError, setParseError] = useState<ProgramParseError | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
@@ -231,6 +233,7 @@ export function PlayPage() {
   const speedRef = useRef(speed);
   speedRef.current = speed;
   const eventsRef = useRef<RunEvent[]>([]);
+  const finalStateRef = useRef<SimState | null>(null);
   const eventIndexRef = useRef(0);
   const timerRef = useRef<number | null>(null);
   const runTokenRef = useRef(0);
@@ -296,7 +299,10 @@ export function PlayPage() {
         setSim(initialSim(parsed.map));
 
         const draft = loadDraft(response.map.id);
-        const initialSource = draft ?? defaultProgramForMap(response.map.name);
+        const availableSamples = samplesForMap(response.map.name);
+        const initialSource = draft ?? (availableSamples.length > 1 ? defaultProgramForMap(response.map.name) : '');
+        const custom = loadCustomDraft(response.map.id);
+        setSelectedSample(custom === initialSource ? '__custom' : availableSamples.find(sample => sample.source === initialSource)?.name ?? '__custom');
         setSource(initialSource);
         setSourceMapId(response.map.id);
         document.title = `${response.map.name} – MineScript`;
@@ -340,6 +346,12 @@ export function PlayPage() {
 
     function tick() {
       if (cancelled) return;
+      if (speedRef.current === 'instant') {
+        eventIndexRef.current = eventsRef.current.length;
+        setSim(finalStateRef.current);
+        setStatus('finished');
+        return;
+      }
       const event = eventsRef.current[eventIndexRef.current];
       if (!event) {
         setStatus('finished');
@@ -367,7 +379,7 @@ export function PlayPage() {
         timerRef.current = null;
       }
     };
-  }, [status, runSequence]);
+  }, [status, runSequence, speed]);
 
   const submitRun = useCallback(
     async (run: CurrentRun) => {
@@ -416,6 +428,7 @@ export function PlayPage() {
     setImportMessage(null);
     currentRunRef.current = null;
     eventsRef.current = [];
+    finalStateRef.current = null;
     eventIndexRef.current = 0;
     if (nextMap) setSim(initialSim(nextMap));
   }
@@ -444,6 +457,7 @@ export function PlayPage() {
     runTokenRef.current = token;
     currentRunRef.current = { mapId: map.id, source, token };
     eventsRef.current = result.events;
+    finalStateRef.current = finalSim(gameMap, result);
     eventIndexRef.current = 0;
     setSim(initialSim(gameMap));
 
@@ -509,6 +523,8 @@ export function PlayPage() {
           return;
         }
         setSource(text);
+        setSelectedSample('__custom');
+        if (map) saveCustomDraft(map.id, text);
         setImportMessage(`Program betöltve: ${file.name}`);
       })
       .catch((cause) => {
@@ -523,16 +539,28 @@ export function PlayPage() {
 
   function handleSampleChange(name: string) {
     if (!map) return;
+    if (name === '__custom') {
+      resetRunState();
+      const customSource = selectedSample === '__custom' ? source : loadCustomDraft(map.id) ?? '';
+      setSource(customSource);
+      saveCustomDraft(map.id, customSource);
+      setSelectedSample('__custom');
+      return;
+    }
+    if (selectedSample === '__custom') saveCustomDraft(map.id, source);
     const sample = samplesForMap(map.name).find((entry) => entry.name === name);
     if (!sample) return;
     resetRunState();
     setSource(sample.source);
+    setSelectedSample(sample.name);
     setImportMessage(`Minta betöltve: ${sample.name}`);
   }
 
   function handleSourceChange(value: string) {
     runTokenRef.current++;
     setSource(value);
+    setSelectedSample('__custom');
+    if (map) saveCustomDraft(map.id, value);
     setParseError(null);
     setImportMessage(null);
     if (status !== 'idle') {
@@ -558,10 +586,6 @@ export function PlayPage() {
         return 'Leállítva';
     }
   }, [status, speed, sim?.error]);
-
-  const selectedSample = useMemo(() => {
-    return samples.find((sample) => sample.source === source)?.name ?? '';
-  }, [samples, source]);
 
   if (loading) {
     return (
@@ -850,19 +874,9 @@ export function PlayPage() {
             </div>
 
             <div className="program-toolbar">
-              <select
-                value={selectedSample}
-                onChange={(event) => handleSampleChange(event.target.value)}
-                disabled={isRunning}
-                aria-label="Mintaprogram betöltése"
-              >
-                <option value="">Mintaprogram betöltése…</option>
-                {samples.map((sample) => (
-                  <option key={sample.name} value={sample.name}>
-                    {sample.name}
-                  </option>
-                ))}
-              </select>
+              <SelectMenu value={selectedSample} onChange={handleSampleChange} disabled={isRunning}
+                label="Mintaprogram betöltése" placeholder="Mintaprogram betöltése…"
+                options={[{ value: '__custom', label: 'Saját program', description: 'Írd meg a saját kódodat. Mintaváltás után is megőrizzük.' }, ...samples.map(sample => ({ value: sample.name, label: sample.name, description: sample.description }))]} />
               <button
                 type="button"
                 className="btn btn-ghost btn-small"

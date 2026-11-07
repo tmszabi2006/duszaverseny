@@ -1,5 +1,13 @@
 const draftPrefix = 'minescript:draft:';
 
+export function loadCustomDraft(mapId: number): string | null {
+  try { return window.localStorage.getItem(`minescript:custom-draft:${mapId}`); } catch { return null; }
+}
+
+export function saveCustomDraft(mapId: number, source: string): void {
+  try { window.localStorage.setItem(`minescript:custom-draft:${mapId}`, source); } catch { /* Storage is optional. */ }
+}
+
 export function draftKey(mapId: number): string {
   return `${draftPrefix}${mapId}`;
 }

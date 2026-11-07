@@ -7,7 +7,7 @@ import { errorMessage, formatDate } from '../utils';
 import { GameIcon } from '../components/GameIcon';
 
 function MineArt({ seed = 0 }: { seed?: number }) {
-  return <div className={`mine-art mine-art-${seed % 9}`} aria-hidden="true" />;
+  return <div className={`mine-art mine-art-${seed % 15}`} aria-hidden="true" />;
 }
 
 function MapCard({ map }: { map: MapSummary }) {

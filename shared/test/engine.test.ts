@@ -92,9 +92,25 @@ describe('runProgram – robotmozgás', () => {
 });
 
 describe('runProgram – arany és isThere', () => {
+  it('az utolsó arany után a beágyazott végtelen ciklusból is sikeresen kilép', () => {
+    const result = run(['>@'], 'while true\n    if true\n        step forward 1\n        mine here\n        print 99');
+    expect(result.error).toBeNull();
+    expect(result.gold).toBe(1);
+    expect(result.steps).toBe(4);
+    expect(result.console).toEqual([]);
+    expect(result.events.slice(-2).map(event => event.type)).toEqual(['mine', 'end']);
+  });
+
+  it('az első arany után folytatódik, amíg maradt másik', () => {
+    const result = run(['>@.@'], 'step forward 1\nmine here\nprint 7\nstep forward 2\nmine here\nprint 99');
+    expect(result.gold).toBe(2);
+    expect(result.error).toBeNull();
+    expect(result.console.map(entry => entry.text)).toEqual(['7']);
+  });
   it('a robot ráléphet az aranyra, de csak a mine here szedi fel', () => {
     const result = run(['>..@'], 'step forward 3\nmine here\nmine here');
-    expect(result.error).toMatchObject({ code: 'E_NO_GOLD', line: 3 });
+    expect(result.error).toBeNull();
+    expect(result.steps).toBe(2);
     expect(result.gold).toBe(1);
     expect(result.cells[0][3]).toBe('empty');
   });

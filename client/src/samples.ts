@@ -5,7 +5,7 @@ export interface SampleProgram {
 }
 
 const ARANYER: SampleProgram = {
-  name: 'Aranyér – három érme',
+  name: 'Hajnalcsillag – három aranyrög',
   description: 'Egyenesen előrehalad, és minden aranyrög fölött megbányássza a termést.',
   source: ['step forward 3', 'mine here', 'step forward 4', 'mine here', 'step forward 4', 'mine here'].join(
     '\n',
@@ -13,7 +13,7 @@ const ARANYER: SampleProgram = {
 };
 
 const BEMUTATO: SampleProgram = {
-  name: 'Bemutató bánya – körút',
+  name: 'Deres szikla – körút',
   description: 'Körbejárja a falat, és mindkét aranyrögöt összeszedi.',
   source: [
     'turn by 2',
@@ -30,7 +30,7 @@ const BEMUTATO: SampleProgram = {
 };
 
 const KIS_AKNA: SampleProgram = {
-  name: 'Kis akna – körbe a járaton',
+  name: 'Jégcsap-akna – körbe a járaton',
   description: 'Végigjárja a kanyargós tárnát, és mindkét aranyrögöt kihozza.',
   source: [
     'step forward 4',
@@ -67,6 +67,9 @@ const SYNTAX: SampleProgram = {
 };
 
 const BY_MAP_NAME: Record<string, SampleProgram[]> = {
+  'Hajnalcsillag-tárna': [ARANYER, SYNTAX],
+  'Deres szikla': [BEMUTATO, SYNTAX],
+  'Jégcsap-akna': [KIS_AKNA, SYNTAX],
   Aranyér: [ARANYER, SYNTAX],
   'Bemutató bánya': [BEMUTATO, SYNTAX],
   'Kis akna': [KIS_AKNA, SYNTAX],

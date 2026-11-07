@@ -90,10 +90,12 @@ async function main(): Promise<void> {
       }
 
       const [existing] = await connection.query<RowDataPacket[]>(
-        'SELECT id FROM maps WHERE owner_id IS NULL AND name = ? LIMIT 1',
-        [demo.name],
+        'SELECT id FROM maps WHERE owner_id IS NULL AND (name = ? OR name = ?) LIMIT 1',
+        [demo.name, demo.legacyName ?? demo.name],
       );
       if (existing.length > 0) {
+        await connection.execute('UPDATE maps SET name = ?, description = ? WHERE id = ? AND owner_id IS NULL',
+          [demo.name, demo.description, existing[0].id]);
         skipped++;
         continue;
       }

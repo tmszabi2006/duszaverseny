@@ -79,6 +79,9 @@ type Value =
   | { type: 'int'; value: number }
   | { type: 'bool'; value: boolean };
 
+/** Unwind nested loops immediately after the last nugget is mined. */
+class AllGoldCollected {}
+
 class RuntimeFailure extends Error {
   constructor(
     readonly code: RuntimeErrorCode,
@@ -129,7 +132,9 @@ class Interpreter {
     try {
       this.executeBlock(this.program.commands);
     } catch (cause) {
-      if (cause instanceof RuntimeFailure) {
+      if (cause instanceof AllGoldCollected) {
+        // Successful completion, including inside nested while/if blocks.
+      } else if (cause instanceof RuntimeFailure) {
         error = {
           code: cause.code,
           line: cause.line,
@@ -262,6 +267,7 @@ class Interpreter {
           position: { row: this.robot.row, col: this.robot.col },
           gold: this.gold,
         });
+        if (this.gold === this.initialGold) throw new AllGoldCollected();
         return;
       }
 

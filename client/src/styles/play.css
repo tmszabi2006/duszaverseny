@@ -1,0 +1,323 @@
+/* --------------------------------------------------------------------------
+   Játékoldal
+   -------------------------------------------------------------------------- */
+
+.play-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.95fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.play-main,
+.play-side {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.run-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.run-status::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.run-status-idle {
+  color: var(--muted);
+}
+
+.run-status-running {
+  border-color: rgba(245, 179, 1, 0.3);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+}
+
+.run-status-running::before {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.run-status-finished {
+  border-color: rgba(63, 185, 80, 0.3);
+  background: var(--success-soft);
+  color: #7ee787;
+}
+
+.run-status-stopped {
+  border-color: rgba(210, 153, 34, 0.3);
+  background: var(--warning-soft);
+  color: #f0cf85;
+}
+
+.run-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.run-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.run-stat-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.run-stat strong {
+  color: var(--text);
+  font-size: 1.12rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-block {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.progress-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.progress-label span:last-child {
+  color: var(--accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+  height: 5px;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+  box-shadow: 0 0 10px rgba(245, 179, 1, 0.5);
+  transition: width 0.3s ease;
+}
+
+.runtime-error {
+  margin-top: 0.8rem;
+}
+
+.console-panel .console-output {
+  height: 190px;
+  padding: 0.6rem 0.75rem;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #05080c;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.console-line {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.console-line-number {
+  min-width: 2.2rem;
+  color: var(--accent-dim);
+  text-align: right;
+  user-select: none;
+}
+
+.console-empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.console-count {
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.program-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.program-toolbar select {
+  width: auto;
+  min-width: 160px;
+  flex: 1 1 180px;
+}
+
+.sample-description {
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.run-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.verification-row {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.verification-saving {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-bright);
+}
+
+.verification-saved {
+  color: #7ee787;
+}
+
+.verification-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  color: #ffb3ad;
+}
+
+.shortcut-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.22rem;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+kbd {
+  padding: 0.08rem 0.3rem;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-soft);
+  font-size: 0.66rem;
+}
+
+/* --------------------------------------------------------------------------
+   Ranglista
+   -------------------------------------------------------------------------- */
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.leaderboard-table th {
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.leaderboard-table td {
+  padding: 0.58rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.leaderboard-table tr.is-current-user {
+  background: rgba(245, 179, 1, 0.07);
+}
+
+.leaderboard-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rank-cell {
+  width: 3.2rem;
+  font-weight: 750;
+}
+
+.leaderboard-name {
+  color: var(--text);
+  font-weight: 600;
+}

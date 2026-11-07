@@ -18,7 +18,7 @@ Az AI-t elsősorban a **megjelenítési réteg újratervezésére**, néhány kl
 
 Konkrétan AI-segítséggel készült:
 
-- a teljes `client/src/styles.css` designrendszer újraírása (kb. 2 700 sor: színtokenek, tipográfia, elrendezés, kártyák, űrlapok, térképnézet, kódszerkesztő, ranglista, reszponzív töréspontok, animációk, csökkentett mozgás támogatása);
+- a teljes `client/src/styles/` CSS designrendszer újraírása és témák szerinti fájlokra bontása (színtokenek, tipográfia, elrendezés, kártyák, űrlapok, térképnézet, kódszerkesztő, ranglista, reszponzív töréspontok, animációk, csökkentett mozgás támogatása);
 - a `Logo` komponens kiemelése, a fejléc és a belépőoldal frissítése, favicon készítése;
 - a `ProgramEditor` újraírása szintaxiskiemelő átfedéssel, görgetésszinkronnal, Tab/Shift+Tab behúzással, automatikus behúzással és Ctrl/Cmd+Enter gyorsparanccsal;
 - a `MapView` robotméret-hibájának javítása nem négyzetes térképeken, valamint a térkép látogatási módainak (alapértelmezett halvány fal/arany és a teljes sötétség opció) stílusának beállítása;

@@ -1,0 +1,110 @@
+/* --------------------------------------------------------------------------
+   Gombok
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.62rem 1.05rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease,
+    color 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+
+a.btn:hover,
+.btn:hover {
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-primary {
+  border-color: rgba(255, 211, 92, 0.6);
+  background: linear-gradient(180deg, var(--accent-bright), var(--accent));
+  color: #171200;
+  box-shadow: 0 10px 24px rgba(245, 179, 1, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 14px 30px rgba(245, 179, 1, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.btn-ghost {
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-soft);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.btn-danger {
+  border-color: rgba(255, 123, 114, 0.35);
+  background: var(--danger-soft);
+  color: #ffb3ad;
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: rgba(255, 123, 114, 0.6);
+  background: rgba(255, 123, 114, 0.2);
+  color: #ffd0cc;
+}
+
+.btn-small {
+  min-height: 2rem;
+  padding: 0.38rem 0.72rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.btn-large {
+  min-height: 3rem;
+  padding: 0.85rem 1.3rem;
+  border-radius: 12px;
+  font-size: 0.98rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-run {
+  min-width: 150px;
+}
+
+.link-button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent-bright);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: #ffe28a;
+}

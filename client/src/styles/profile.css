@@ -1,0 +1,148 @@
+/* --------------------------------------------------------------------------
+   Profil
+   -------------------------------------------------------------------------- */
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+}
+
+.profile-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(22, 34, 47, 0.82), rgba(10, 17, 24, 0.92));
+  box-shadow: var(--shadow-soft);
+}
+
+.profile-stat-label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.profile-stat-card strong {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.run-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.run-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(20, 31, 43, 0.88), rgba(10, 17, 24, 0.94));
+  box-shadow: var(--shadow-soft);
+}
+
+.run-card-main {
+  min-width: 0;
+}
+
+.run-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+
+.run-card-heading h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.run-card-heading h3 a {
+  color: #fff;
+}
+
+.run-card-heading h3 a:hover {
+  color: var(--accent-bright);
+  text-decoration: none;
+}
+
+.run-card-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.metric-pill {
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-size: 0.72rem;
+}
+
+.metric-pill strong {
+  color: var(--text);
+}
+
+.metric-error {
+  border-color: rgba(255, 123, 114, 0.3);
+  background: var(--danger-soft);
+  color: #ffb3ad;
+}
+
+.metric-ok {
+  border-color: rgba(63, 185, 80, 0.3);
+  background: var(--success-soft);
+  color: #7ee787;
+}
+
+.run-error-detail {
+  margin: 0.45rem 0 0;
+}
+
+.run-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.run-source-details {
+  grid-column: 1 / -1;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+}
+
+.run-source-details summary {
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.run-source-details pre {
+  margin: 0.6rem 0 0;
+  padding: 0.75rem;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #05080c;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}

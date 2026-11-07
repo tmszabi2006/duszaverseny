@@ -2531,6 +2531,18 @@ kbd {
   resize: none;
 }
 
+/* Az általános `textarea:focus` stílus (majdnem átlátszatlan sötét háttér)
+   nagyobb specifikussal felülírta az alábbi átlátszó hátteret, ezért
+   fókuszáláskor elsötétült – szerkesztés közben is maradjon átlátszó,
+   hogy mögötte látszódjon a kiemelő réteg. */
+.code-textarea:focus,
+.code-textarea:active {
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
 .code-textarea::selection {
   background: rgba(245, 179, 1, 0.28);
 }

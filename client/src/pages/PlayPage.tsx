@@ -666,17 +666,22 @@ export function PlayPage() {
                 </p>
               </div>
               <div className="panel-header-actions">
-                <label
-                  className="toggle-field toggle-field-small"
-                  title="Ha be van kapcsolva, csak a robot által felderített mezők látszanak."
+                <button
+                  type="button"
+                  className={`btn btn-ghost btn-small map-visibility-toggle${
+                    fullDark ? ' is-active' : ''
+                  }`}
+                  onClick={() => setFullDark((value) => !value)}
+                  aria-pressed={fullDark}
+                  title={
+                    fullDark
+                      ? 'A felderítetlen falak és aranyak halvány megjelenítése.'
+                      : 'A felderítetlen falak és aranyak elrejtése teljes sötétséggel.'
+                  }
                 >
-                  <input
-                    type="checkbox"
-                    checked={fullDark}
-                    onChange={(event) => setFullDark(event.target.checked)}
-                  />
-                  <span>Teljes sötétség</span>
-                </label>
+                  <span aria-hidden="true">{fullDark ? '☀' : '☾'}</span>
+                  {fullDark ? 'Halvány mód' : 'Sötét mód'}
+                </button>
                 <span className={`run-status run-status-${status}`}>{statusLabel}</span>
               </div>
             </div>

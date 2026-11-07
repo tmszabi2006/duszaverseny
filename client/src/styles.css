@@ -1606,6 +1606,37 @@ input[type='radio'] {
     #0a1219;
 }
 
+/* Nem felderített, de halványan megsejthető mezők (alapmód). */
+.map-cell-faint {
+  background-color: #05080d;
+}
+
+.map-cell-faint-wall {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(59, 74, 87, 0.13), transparent 66%),
+    #05080d;
+}
+
+.map-cell-faint-gold {
+  background:
+    radial-gradient(circle at 50% 55%, rgba(245, 179, 1, 0.12), transparent 64%),
+    #05080d;
+}
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.toggle-field-small span {
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
 .gold-nugget {
   position: absolute;
   top: 50%;

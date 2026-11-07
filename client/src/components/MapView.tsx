@@ -12,6 +12,8 @@ interface MapViewProps {
   robot?: RobotState;
   cells?: CellKind[][];
   discovered?: boolean[][];
+  /** Igaz esetén a felderítetlen mezők teljesen sötétek; egyébként a falak és az aranyak halványan látszanak. */
+  fullDark?: boolean;
   className?: string;
   ariaLabel?: string;
   interactive?: boolean;
@@ -31,6 +33,7 @@ export function MapView({
   robot,
   cells,
   discovered,
+  fullDark = false,
   className = '',
   ariaLabel,
   interactive = false,
@@ -60,10 +63,16 @@ export function MapView({
       {activeCells.map((row, rowIndex) =>
         row.map((kind, colIndex) => {
           const hidden = discovered ? !discovered[rowIndex]?.[colIndex] : false;
+          const showFaint = hidden && !fullDark && kind !== 'empty';
+          const cellClassName = hidden
+            ? showFaint
+              ? `map-cell-hidden map-cell-faint map-cell-faint-${kind}`
+              : 'map-cell-hidden'
+            : `map-cell-${kind}`;
           return (
             <div
               key={`${rowIndex}:${colIndex}`}
-              className={`map-cell ${hidden ? 'map-cell-hidden' : `map-cell-${kind}`}`}
+              className={`map-cell ${cellClassName}`}
               title={`${rowIndex + 1}. sor, ${colIndex + 1}. oszlop: ${
                 hidden ? 'még nem felderített mező' : cellKindLabel(kind)
               }`}

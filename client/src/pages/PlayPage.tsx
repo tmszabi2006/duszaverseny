@@ -36,6 +36,8 @@ type Speed = 'slow' | 'normal' | 'fast' | 'instant';
 type RunStatus = 'idle' | 'running' | 'finished' | 'stopped';
 type SubmissionStatus = 'idle' | 'saving' | 'saved' | 'error';
 
+const FULL_DARK_STORAGE_KEY = 'minescript.fullDark';
+
 interface SimState {
   robot: RobotState;
   cells: CellKind[][];
@@ -201,6 +203,13 @@ export function PlayPage() {
   const [sim, setSim] = useState<SimState | null>(null);
   const [status, setStatus] = useState<RunStatus>('idle');
   const [speed, setSpeed] = useState<Speed>('normal');
+  const [fullDark, setFullDark] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem(FULL_DARK_STORAGE_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [runSequence, setRunSequence] = useState(0);
   const [submission, setSubmission] = useState<SubmissionStatus>('idle');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -210,6 +219,14 @@ export function PlayPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
   const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(FULL_DARK_STORAGE_KEY, String(fullDark));
+    } catch {
+      // LocalStorage nem elérhető (pl. privát böngészőmód): a beállítás csak ideiglenesen él.
+    }
+  }, [fullDark]);
 
   const speedRef = useRef(speed);
   speedRef.current = speed;
@@ -648,11 +665,30 @@ export function PlayPage() {
                   {DIRECTION_LABELS_HU[sim.robot.direction]} felé.
                 </p>
               </div>
-              <span className={`run-status run-status-${status}`}>{statusLabel}</span>
+              <div className="panel-header-actions">
+                <label
+                  className="toggle-field toggle-field-small"
+                  title="Ha be van kapcsolva, csak a robot által felderített mezők látszanak."
+                >
+                  <input
+                    type="checkbox"
+                    checked={fullDark}
+                    onChange={(event) => setFullDark(event.target.checked)}
+                  />
+                  <span>Teljes sötétség</span>
+                </label>
+                <span className={`run-status run-status-${status}`}>{statusLabel}</span>
+              </div>
             </div>
 
             <div className="map-stage">
-              <MapView map={gameMap} robot={sim.robot} cells={sim.cells} discovered={sim.discovered} />
+              <MapView
+                map={gameMap}
+                robot={sim.robot}
+                cells={sim.cells}
+                discovered={sim.discovered}
+                fullDark={fullDark}
+              />
             </div>
 
             <div className="map-legend" aria-label="Térkép jelmagyarázat">
@@ -668,7 +704,11 @@ export function PlayPage() {
               <span>
                 <span className="legend-dot legend-robot" aria-hidden="true" /> Robot
               </span>
-              <span className="legend-note">A feltérképezetlen mezők sötétek maradnak.</span>
+              <span className="legend-note">
+                {fullDark
+                  ? 'A felderítetlen mezők teljesen sötétek maradnak.'
+                  : 'A felderítetlen falak és aranyak halványan is látszanak.'}
+              </span>
             </div>
 
             <div className="progress-block">

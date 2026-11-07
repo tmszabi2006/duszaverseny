@@ -84,6 +84,7 @@ export function ProgramEditor({
   const highlightRef = useRef<HTMLPreElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pendingSelection = useRef<[number, number] | null>(null);
+  const releaseTab = useRef(false);
 
   const lines = value.split('\n');
   const lineCount = Math.max(lines.length, 1);
@@ -129,6 +130,15 @@ export function ProgramEditor({
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (readOnly || !onChange) return;
+    if (event.key === 'Escape') {
+      releaseTab.current = true;
+      return;
+    }
+    if (event.key === 'Tab' && releaseTab.current) {
+      releaseTab.current = false;
+      return;
+    }
+    releaseTab.current = false;
 
     const textarea = event.currentTarget;
     const start = textarea.selectionStart;
@@ -268,6 +278,7 @@ export function ProgramEditor({
             autoComplete="off"
             wrap="off"
             aria-label={ariaLabel}
+            aria-description="A Tab behúzást szúr be. A szerkesztő elhagyásához nyomj Escape-et, majd Tabot."
             placeholder={'set count to 0\nstep forward 1\nmine here'}
           />
         )}

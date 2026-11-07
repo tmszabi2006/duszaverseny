@@ -1,0 +1,431 @@
+/* MineScript: winter expedition. Authoritative visual system for every route. */
+:root {
+  --bg: #17191f; --bg-deep: #101116; --bg-elevated: #22252d;
+  --panel: #252830; --panel-strong: #303540; --panel-soft: #1c1f27;
+  --border: #3b404c; --border-strong: #697180;
+  --text: #f0f0e7; --text-soft: #bac9c9; --muted: #a2b4b6;
+  --accent: #e9b66d; --accent-bright: #f7d49b; --accent-dim: #b58a50; --accent-soft: #e9b66d15;
+  --success: #89cbaa; --success-soft: #89cbaa15; --info: #8bcbd8; --info-soft: #8bcbd813;
+  --danger: #f19383; --danger-soft: #f1938314; --robot: #a3f4e9;
+  --radius: 12px; --shadow-soft: none;
+  --font-sans: 'Segoe UI', 'Trebuchet MS', Arial, sans-serif;
+}
+html { background: var(--bg-deep); scroll-padding-top: 95px; }
+body { background: #17191f; color: var(--text); font-size: 14px; }
+#root { min-height: 100vh; isolation: isolate; }
+h1,h2,h3 { color: #f4f2e9; }
+h1 { font-size: clamp(1.65rem, 2.4vw, 2.4rem); letter-spacing: -.035em; font-weight: 750; line-height: 1.17; text-wrap: balance; }
+h2 { font-size: 1.2rem; letter-spacing: -.02em; }
+p { line-height: 1.65; }
+a { color: #a9d8dc; }
+button,input,textarea,select { font-family: var(--font-sans); }
+.game-icon { width: 21px; height: 21px; flex: 0 0 auto; vertical-align: middle; }
+.mining-robot { width: 100%; height: 100%; overflow: visible; }
+.brand { gap: 11px; min-width: 0; }
+.brand-icon { width: 39px; height: 43px; border: 0; border-radius: 0; color: var(--accent); background: none; box-shadow: none; }
+.brand-icon .game-icon { width: 35px; height: 35px; }
+.brand-icon::after { display: none; }
+.brand-text { gap: 5px; }
+.brand-text strong { font-size: 23px; font-weight: 800; letter-spacing: -.055em; }
+.brand-text strong > span { font-size: inherit; color: var(--accent); }
+.brand-text > span { color: #97abad; font-size: 9px; letter-spacing: .04em; text-transform: none; }
+.btn { border-radius: 7px; min-height: 42px; padding: 10px 17px; font-size: 13px; font-weight: 650; box-shadow: none; transition: background .18s, border-color .18s, color .18s; }
+.btn-primary { background: #e9b66d; color: #241b10; border-color: #e9b66d; box-shadow: none; }
+.btn-primary:hover:not(:disabled) { background: #f7d49b; border-color: #f7d49b; transform: none; box-shadow: none; filter: none; }
+.btn-ghost { background: #ffffff04; color: #c8d4d3; border-color: #555e6d; }
+.btn-ghost:hover:not(:disabled) { background: #2a3b3e; border-color: #8a9c9a; }
+.btn-small { min-height: 34px; padding: 7px 11px; font-size: 12px; border-radius: 6px; }
+.btn-large { min-height: 49px; font-size: 14px; }
+.btn .game-icon { width: 18px; height: 18px; }
+.btn:disabled { opacity: .55; }
+.icon-button { display: inline-grid; place-items: center; width: 38px; height: 38px; border: 1px solid transparent; border-radius: 7px; color: #a6b7b7; background: transparent; cursor: pointer; }
+.icon-button:hover { color: var(--accent); background: #ffffff09; }
+.page { gap: 24px; animation: none; }
+.page-heading { gap: 9px; }
+.page-heading-with-action { align-items: center; gap: 20px; }
+.page-lead { color: #acbfc0; font-size: 14px; max-width: 72ch; }
+.section-heading { gap: 12px; }
+.section-heading h2 { font-size: 21px; }
+.panel { padding: 22px; background: #252830; border: 1px solid #424854; border-radius: 12px; box-shadow: none; }
+.panel-header { margin-bottom: 20px; gap: 12px; }
+.panel-header h2 { font-size: 17px; }
+.panel-subtitle { color: #a3b7b8; font-size: 12px; }
+.badge { font-size: 10px; border-radius: 4px; letter-spacing: .01em; background: #132026e8; color: #d9e8e6; border-color: #526267; }
+.badge-system { color: #f4d197; background: #2a241be8; border-color: #a88448; }
+.badge-owner { color: #bce6d1; background: #1c332be8; border-color: #5e9684; }
+input[type='text'],input[type='password'],input[type='search'],input[type='number'],select,textarea {
+  background: #191c23; border-color: #596373; border-radius: 7px; color: #edf1e9; font-size: 13px; min-height: 42px;
+}
+input::placeholder,textarea::placeholder { color: #93a8ac; }
+input[type='text']:focus,input[type='password']:focus,input[type='search']:focus,input[type='number']:focus,select:focus,textarea:focus {
+  background: #242936; border-color: #e9b66d; box-shadow: 0 0 0 2px #e9b66d21;
+}
+.field-label { font-size: 12px; font-weight: 650; letter-spacing: 0; text-transform: none; color: #ccd8d6; }
+.field-hint { color: #a0b4b7; font-size: 12px; }
+.alert { border-radius: 8px; border-width: 1px; font-size: 13px; }
+.empty-state { background: #20242c; border: 1px dashed #4c6266; border-radius: 12px; }
+.empty-icon { color: var(--accent); filter: none; }
+.empty-state p { color: #b3c5c5; }
+:focus-visible { outline: 2px solid #f7d49b; outline-offset: 4px; }
+
+/* Expedition navigation */
+.app-shell { display: grid; grid-template-columns: 236px minmax(0,1fr); min-height: 100vh; }
+.expedition-sidebar { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; padding: 31px 18px 19px; background: #121419; border-right: 1px solid #333844; z-index: 10; }
+.expedition-sidebar > .brand { padding: 0 4px 37px; }
+.main-nav { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin: 0; }
+.nav-link { display: flex; align-items: center; gap: 13px; padding: 13px 14px; border-radius: 7px; font-size: 13px; font-weight: 600; color: #a9babc; border: 1px solid transparent; }
+.nav-link.active { background: #e9b66d12; border-color: #e9b66d35; color: #f2ca8e; }
+.nav-link:hover { background: #ffffff07; border-color: #4b5d5d; }
+.nav-arrow { margin-left: auto; font-size: 19px; }
+.sidebar-expedition { margin-top: auto; padding: 45px 12px 30px; text-align: center; }
+.sidebar-expedition .mining-robot { width: 95px; height: 95px; display: block; margin: 0 auto 18px; transform: rotate(-9deg); }
+.sidebar-expedition > span { color: #ebc48c; font-weight: 650; font-size: 13px; }
+.sidebar-expedition p { color: #90a7aa; font-size: 12px; margin: 8px 0 0; }
+.sidebar-account { display: flex; gap: 10px; align-items: center; padding-top: 20px; border-top: 1px solid #2b3b40; }
+.user-avatar { width: 35px; height: 35px; border-radius: 9px; display: grid; place-items: center; background: #333946; color: #e2c394; font-weight: 700; flex-shrink: 0; }
+.sidebar-account > div { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.sidebar-account strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.sidebar-account > div > span { color: #9cb1b3; font-size: 11px; }
+.expedition-workspace { min-width: 0; display: flex; flex-direction: column; }
+.workspace-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 18px; min-height: 76px; padding: 16px 34px; border-bottom: 1px solid #383e4a; background: #191c23f5; }
+.workspace-header > div { display: flex; align-items: center; gap: 12px; }
+.workspace-header > div:first-child { color: #bdcece; font-size: 12px; }
+.workspace-header > div:first-child .game-icon { color: #d6b57d; width: 17px; height: 17px; }
+.winter-season { color: #97b8bd; font-size: 11px; }
+.site-main { width: 100%; max-width: 1580px; padding: 32px 34px 50px; margin: 0 auto; flex: 1; }
+.site-footer { display: flex; justify-content: space-between; flex-wrap: wrap; max-width: none; padding: 22px 34px; font-size: 11px; color: #98adb0; gap: 12px; border-color: #2c3c41; }
+
+/* The entrance: game art on the left, warm paper sign-in on the right. */
+.login-page { display: grid; grid-template-columns: minmax(0,1fr) 430px; min-height: 100svh; padding: 0; overflow: clip; background: #0c1c24; }
+.login-hero { min-width: 0; min-height: 850px; height: 100svh; display: flex; flex-direction: column; align-items: stretch; position: relative; padding: 0; isolation: isolate; overflow: hidden; z-index: auto; }
+.login-scene { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg,#07141c55 0%,transparent 60%,#07141ce8 100%),linear-gradient(90deg,#07141c85,transparent 65%),url('/assets/winter-mine.webp') 100% center / cover; }
+.login-brand-row { display: flex; justify-content: space-between; align-items: center; padding: 36px 42px; gap: 20px; position: relative; z-index: 5; }
+.login-story { position: relative; z-index: 5; padding: 70px 42px 0; max-width: 730px; }
+.login-story h1 { font-size: clamp(44px,4.7vw,78px); letter-spacing: -.04em; line-height: 1.02; margin-bottom: 28px; text-wrap: balance; text-shadow: 0 4px 22px #07141c60; }
+.login-story h1 span { color: #f3cd91; }
+.login-story > p { color: #e0e9e8; font-size: 16px; max-width: 49ch; line-height: 1.8; text-shadow: 0 2px 8px #09151d; }
+.login-mobile-cta { display: none; }
+.expedition-intro { position: relative; z-index: 5; display: flex; align-items: center; gap: 16px; margin-top: auto; padding: 34px 42px 40px; }
+.intro-symbol { width: 45px; height: 45px; display: grid; place-items: center; border: 1px solid #a7bec352; border-radius: 8px; background: #0a1a23b0; color: #e9c78d; }
+.expedition-intro strong { font-size: 14px; color: #e5eeee; }
+.expedition-intro p { color: #b7cbd0; font-size: 12px; margin: 5px 0 0; }
+.login-panel { background: var(--bg-deep); color: var(--text); min-width: 0; position: relative; z-index: 5; padding: 42px 38px; display: flex; flex-direction: column; justify-content: center; align-items: stretch; min-height: 100svh; }
+.login-card { width: 100%; max-width: none; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.auth-emblem { display: grid; width: 55px; height: 55px; place-items: center; border: 1px solid var(--border-strong); border-radius: 50%; margin-bottom: 30px; color: var(--accent); }
+.auth-emblem .game-icon { width: 28px; height: 28px; }
+.auth-tabs { display: flex; padding: 0; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; gap: 22px; margin-bottom: 32px; }
+.auth-tabs button { padding: 12px 0; flex: 0 1 auto; border: 0; border-radius: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); font-weight: 650; font-size: 13px; }
+.auth-tabs button.active { border-color: var(--accent); color: var(--accent); background: none; box-shadow: none; }
+.login-card h2 { color: var(--text); font-size: 29px; font-weight: 750; letter-spacing: -.035em; margin-bottom: 12px; scroll-margin-top: 24px; }
+.login-card > .muted { color: var(--text-soft); font-size: 13px; margin-bottom: 26px; }
+.login-card .field { margin-bottom: 20px; gap: 7px; }
+.login-card .field-label { color: var(--text); font-size: 12px; }
+.login-card .field-hint { color: var(--muted); font-size: 11px; }
+.login-card input { background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: 6px; color: var(--text); min-height: 47px; padding: 12px; font-size: 14px; }
+.login-card input:focus { background: var(--panel-strong); border-color: var(--accent); box-shadow: 0 0 0 2px #e9b66d21; }
+.login-card input::placeholder { color: var(--muted); }
+.login-card .btn-primary { color: #241b10; border-color: var(--accent); background: var(--accent); margin-top: 8px; }
+.login-card .btn-primary:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
+.login-card .auth-footnote { color: var(--text-soft); font-size: 12px; margin-top: 24px; }
+.login-card .link-button { color: var(--accent); font-weight: 700; }
+.login-panel .competition-note { margin: 38px 0 0; padding: 20px 0 0; border-top: 1px solid var(--border); color: var(--muted); text-align: left; font-size: 10px; line-height: 1.8; max-width: none; }
+.login-card .alert-error { color: var(--danger); background: var(--danger-soft); border-color: var(--danger); }
+.login-card :focus-visible { outline-color: var(--accent); }
+
+/* Mine dossiers */
+.expedition-hero { min-height: 345px; display: flex; align-items: center; position: relative; overflow: hidden; border-radius: 14px; background: linear-gradient(90deg,#0b202bef 0%,#0b202b80 42%,#0b202b00 72%),url('/assets/winter-mine.webp') center 55% / cover; }
+.expedition-hero-content { position: relative; z-index: 5; padding: 40px; max-width: 570px; }
+.expedition-hero h2 { font-size: clamp(35px,3.6vw,58px); line-height: 1.04; letter-spacing: -.04em; margin: 0 0 20px; font-weight: 750; }
+.expedition-hero h2 span { color: #f3ce96; }
+.expedition-hero p { color: #d8e8eb; font-size: 13px; margin-bottom: 25px; line-height: 1.8; }
+.hero-caption { display: flex; align-items: center; gap: 8px; position: absolute; right: 20px; bottom: 16px; color: #e6eff0; font-size: 10px; text-shadow: 0 2px 5px #000; }
+.hero-caption .game-icon { width: 14px; height: 14px; }
+.expedition-summary { display: flex; flex-wrap: wrap; gap: 16px 32px; padding: 0 0 25px; border-bottom: 1px solid #34454a; }
+.expedition-summary > span { display: inline-flex; align-items: center; gap: 7px; color: #a6babb; font-size: 12px; }
+.expedition-summary strong { color: #e7e7dc; font-size: 15px; }
+.expedition-summary .game-icon { width: 17px; height: 17px; color: #d4b887; }
+.maps-toolbar { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; gap: 12px; align-items: center; }
+.search-field { min-width: 180px; flex: 1 1 230px; }
+.map-sort { width: auto; max-width: 205px; }
+.toggle-field { border-radius: 6px; padding: 8px 11px; background: #20242d; border-color: #3d5156; font-size: 12px; }
+.map-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.map-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid #464c59; border-radius: 12px; background: #252830; box-shadow: none; transition: border-color .2s; }
+.map-card:hover { transform: none; border-color: #b3986b; box-shadow: none; }
+.map-card-media { position: relative; height: 175px; overflow: hidden; background: #1d2028; }
+.mine-art { width: 100%; height: 100%; background: url('/assets/mine-atlas.webp') 0 center / 300% auto; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+.mine-art-1 { background-position: 50% center; }
+.mine-art-2 { background-position: 100% center; }
+.mine-art { position: relative; }
+.mine-art-3,.mine-art-4,.mine-art-5,.mine-art-6,.mine-art-7,.mine-art-8 { background: none; }
+.mine-art-3::before,.mine-art-4::before,.mine-art-5::before,.mine-art-6::before,.mine-art-7::before,.mine-art-8::before {
+  content: ''; position: absolute; left: 0; top: 50%; width: 100%; aspect-ratio: 1;
+  transform: translateY(-50%); background: url('/assets/mine-atlas-expansion.webp') 0 0 / 300% 200%;
+}
+.mine-art-4::before { background-position: 50% 0; }
+.mine-art-5::before { background-position: 100% 0; }
+.mine-art-6::before { background-position: 0 100%; }
+.mine-art-7::before { background-position: 50% 100%; }
+.mine-art-8::before { background-position: 100% 100%; }
+.map-card:hover .mine-art { transform: scale(1.045); }
+.map-card-media::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 55%,#25283090); }
+.map-badges { position: absolute; inset: 12px 12px auto; z-index: 1; display: flex; gap: 6px; }
+.map-card-body { padding: 21px; display: flex; flex-direction: column; flex: 1; gap: 16px; }
+.map-card-heading h2 { font-size: 18px; line-height: 1.35; }
+.map-card-heading h2 a { color: #f1ebdf; }
+.map-size { border: 0; padding: 3px 0; background: none; color: #adc2c4; font-size: 11px; }
+.map-description { color: #acc0c0; font-size: 12px; min-height: 3em; }
+.map-meta { font-size: 11px; gap: 8px 14px; }
+.map-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+.map-meta .game-icon { width: 14px; height: 14px; color: #e9b66d; }
+.map-meta > span:last-child { flex-basis: 100%; font-size: 10px; color: #9fb4b5; }
+.map-card-actions { padding-top: 14px; border-top: 1px solid #424854; margin-top: 0; }
+.map-card-actions .btn-primary { flex: 1; justify-content: space-between; color: #eac78f; background: transparent; border-color: #7a6b51; }
+.map-card-actions .btn-primary:hover { background: #e9b66d; color: #241b10; }
+.tip-alert { background: #253144; border-color: #3e6267; color: #b9d6d9; padding: 17px 20px; }
+
+/* Working mine: stone relief, gold ore and an actual tracked robot. */
+.play-heading { border-bottom: 1px solid #35474c; padding-bottom: 25px; }
+.breadcrumb { font-size: 12px; }
+.play-layout { grid-template-columns: minmax(0,1.1fr) minmax(340px,1fr); gap: 22px; }
+.play-main,.play-side { gap: 22px; }
+.map-panel { background: #23262e; border-color: #52605b; }
+.map-stage,.editor-board-wrap { position: relative; padding: 20px; border: 8px solid #4d4437; border-radius: 8px; background: radial-gradient(ellipse at 50% 0,#c88b4225,transparent 65%),#0c171b; box-shadow: inset 0 0 0 2px #ab865333; margin-bottom: 20px; }
+.map-stage::before,.map-stage::after { content: ''; position: absolute; width: 9px; height: 9px; border-radius: 50%; top: -5px; background: #b4a28a; box-shadow: inset 0 1px 2px #0009; }
+.map-stage::before { left: -5px; }.map-stage::after { right: -5px; }
+.map-view,.map-stage .map-view,.editor-board-wrap .map-view { width: min(100%,var(--map-max-width,620px)); border-radius: 3px; border-color: #3b4644; box-shadow: 0 8px 20px #0006; }
+.map-cell { border-color: #ffffff05; }
+.map-cell-empty { background: radial-gradient(ellipse at 35% 25%,#a0916a12,transparent 65%),#273130; box-shadow: inset 0 0 0 1px #172221; }
+.map-cell-empty:nth-child(3n) { background-color: #2b3330; }
+.map-cell-wall { background: linear-gradient(150deg,#6c766c,#45534d 40%,#273b37); box-shadow: inset 2px 3px 0 #a8ada044,inset -3px -5px 0 #12231f88; }
+.map-cell-wall::after { inset: 9% 13% 16%; border-radius: 0; opacity: .65; background: linear-gradient(145deg,#98a19130,#162a2760); clip-path: polygon(0 18%,34% 0,87% 10%,100% 51%,76% 100%,12% 91%); border: 0; }
+.map-cell-wall:nth-child(3n)::after { transform: rotate(90deg); }
+.map-cell-wall:nth-child(5n) { background: linear-gradient(130deg,#72867b,#3f5650 60%,#253a35); }
+.map-cell-gold { background: radial-gradient(ellipse at center,#b28b3f35,transparent 75%),#28312b; }
+.gold-nugget { width: 48%; height: 48%; border-radius: 0; clip-path: polygon(23% 0,75% 11%,100% 48%,71% 94%,27% 100%,0 62%); background: conic-gradient(from 10deg at 44% 40%,#f4d898,#c68c3d,#fbe1a4,#b5782e,#f5d792); box-shadow: none; animation: none; }
+.gold-nugget::after { content: ''; position: absolute; inset: 13% 40% 45% 12%; background: #fff2c1; clip-path: polygon(20% 0,100% 40%,45% 100%,0 65%); }
+.map-cell-hidden { background: #091317; box-shadow: inset 0 0 0 1px #ffffff02; }
+.map-cell-hidden::after { background: radial-gradient(ellipse at 50% 100%,#30494c25,transparent); opacity: 1; }
+.map-cell-faint-wall { background: linear-gradient(135deg,#354a4380,#1c302b80); box-shadow: inset 1px 2px 0 #8ba39116,inset -2px -4px #06161060; }
+.map-cell-faint-gold { background: radial-gradient(ellipse at center,#a47d2919,transparent),#101c1b; }
+.map-cell-faint-gold::before { border-radius: 0; clip-path: polygon(20% 0,80% 5%,100% 65%,50% 100%,0 60%); background: #99855140; box-shadow: none; }
+.map-robot svg { width: 92%; height: 92%; fill: none; stroke: none; filter: drop-shadow(0 2px 2px #0009); }
+.map-robot::before { width: 120%; height: 160%; top: -65%; border-radius: 0; background: linear-gradient(0deg,#ffdf9d32,transparent); clip-path: polygon(12% 0,88% 0,58% 100%,42% 100%); animation: none; }
+.map-robot { transition: left .16s linear,top .16s linear,transform .16s ease; }
+.map-cell:focus-visible { z-index: 11; outline-offset: -3px; outline-width: 3px; }
+.map-legend { border-color: #35484b; font-size: 11px; gap: 10px; }
+.legend-wall { background: #74877a; }.legend-empty { background: #28332e; border-color: #69756c; }
+.legend-gold { background: #edc67d; box-shadow: none; transform: rotate(25deg); border-radius: 2px; }
+.legend-robot { background: #a3f4e9; box-shadow: none; }
+.legend-note { font-size: 10px; }
+.progress-block { border: 0; padding: 18px 0; background: none; margin: 0; border-radius: 0; }
+.progress-track { height: 6px; background: #0c191e; border-radius: 2px; }
+.progress-fill { border-radius: 2px; background: #e9b66d; box-shadow: none; }
+.progress-label { font-size: 10px; text-transform: none; letter-spacing: 0; }
+.run-stats { gap: 0; border: 1px solid #3d5154; border-radius: 8px; overflow: hidden; }
+.run-stat { border: 0; border-right: 1px solid #3d5154; border-radius: 0; background: #1b1f28; padding: 12px; }
+.run-stat:last-child { border-right: 0; }
+.run-stat-label { text-transform: none; font-size: 10px; letter-spacing: 0; color: #b0c3c3; }
+.run-stat strong { font-size: 20px; color: #e2e5d8; }
+.run-status { border-radius: 4px; font-size: 9px; letter-spacing: .03em; padding: 6px 8px; }
+.run-status-finished { color: #b3dfc5; border-color: #5b9075; background: #284236; }
+.run-status-running { color: #f4d39d; border-color: #9c814d; }
+.program-panel { background: #22252d; }
+.program-toolbar { gap: 6px; }
+.program-toolbar select { font-size: 12px; }
+.program-toolbar .btn { font-size: 11px; padding: 6px 9px; }
+.code-editor { border-radius: 7px; background: #12151c; border-color: #3b5557; --code-font-size: 13px; --code-line-height: 24px; }
+.code-gutter { background: #191d26; border-color: #2c4045; color: #93a7a7; }
+.code-highlight { color: #dbe5dc; }
+.code-textarea { color: transparent; min-height: 0; background: transparent; border: 0; border-radius: 0; font-family: var(--font-mono); font-size: var(--code-font-size); }
+.code-textarea:focus,.code-textarea:active { background: transparent; border: 0; box-shadow: none; color: transparent; }
+.tok-keyword { color: #e9b881; }.tok-number { color: #94dfd3; }.tok-ident { color: #e0e6dd; }.tok-operator { color: #d9aeb8; }
+.code-line.is-active { background: #d4ab5d18; box-shadow: inset 2px 0 #e9b66d; }
+.run-controls { padding-top: 6px; }
+.btn-run { flex: 1; min-width: 130px; }
+.console-panel { background: #1e2129; }
+.console-panel .console-output { border-color: #2c4449; background: #12151c; border-radius: 6px; height: 150px; }
+.console-line-number { color: #b0a07e; }
+.language-guide { border-top: 1px solid #35494e; margin-top: 18px; padding-top: 14px; color: #b3c5c6; font-size: 12px; }
+.language-guide summary { cursor: pointer; color: #e4c99b; }
+.language-guide dl { display: grid; grid-template-columns: max-content 1fr; gap: 9px 16px; margin-bottom: 0; }
+.language-guide dd { margin: 0; }
+.language-guide code { font-size: 11px; }
+.leaderboard-panel { background: #252830; }
+.table-wrap { border-radius: 6px; border-color: #3b5054; }
+.leaderboard-table th { background: #1a1e27; color: #afc3c5; letter-spacing: 0; text-transform: none; font-size: 11px; }
+.leaderboard-table td { padding: 12px 9px; border-color: #35464a; font-size: 12px; }
+.leaderboard-table tr.is-current-user { background: #e9b66d0b; }
+
+/* Workshop and journal */
+.editor-page > .page-heading { padding: 25px 28px; background: linear-gradient(90deg,#2d323f,#23262e); border: 1px solid #3d5558; border-radius: 12px; }
+.editor-layout { grid-template-columns: minmax(0,1.45fr) minmax(280px,.8fr); gap: 22px; }
+.editor-board-panel { background: #252830; }
+.editor-toolbar { padding: 8px; background: #1c212b; border-color: #3d5558; border-radius: 7px; gap: 8px; }
+.tool-button { border-radius: 5px; padding: 9px 12px; min-height: 40px; }
+.tool-button.active { background: #e9b66d; color: #292317; border-color: #e9b66d; }
+.tool-swatch { border-color: #ffffff35; }
+.toolbar-hint { flex-basis: 100%; font-size: 11px; margin: 0 4px; }
+.coordinate-badge { border-color: #465c5d; background: #1d222c; color: #bed0ce; }
+.editor-tip { font-size: 12px; color: #acc0c0; }
+.direction-button { width: 38px; height: 38px; background: #1d222c; border-color: #435e61; }
+.direction-button.active { color: #f3d19b; border-color: #bb9c65; background: #e9b66d18; }
+.profile-identity { display: flex; align-items: center; gap: 28px; padding: 35px; border-radius: 12px; background: linear-gradient(90deg,#142b30ef,#142b3080),url('/assets/winter-mine.webp') center 55% / cover; border: 1px solid #4b6564; }
+.profile-robot { flex: 0 0 105px; height: 105px; }
+.profile-identity .page-heading { max-width: 650px; }
+.profile-identity h1 { overflow-wrap: anywhere; }
+.profile-stats { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 0; background: #252830; border: 1px solid #3e5558; border-radius: 10px; overflow: hidden; }
+.profile-stat-card { border: 0; border-right: 1px solid #3e5558; border-radius: 0; background: none; box-shadow: none; padding: 22px; gap: 10px; }
+.profile-stat-card:last-child { border-right: 0; }
+.profile-stat-label { font-size: 11px; text-transform: none; letter-spacing: 0; color: #b1c5c6; }
+.profile-stat-card strong { font-size: 27px; }
+.run-card { border-radius: 9px; background: #252830; border-color: #3b5053; box-shadow: none; padding: 20px; }
+.run-card-heading h3 { font-size: 16px; }
+.run-source-details summary { color: #d4c399; }
+.metric-pill { border-radius: 4px; font-size: 11px; border-color: #465952; background: #122024; }
+.metric-ok { color: #b9dec5; }
+.danger-zone { background: #4c282320; border-color: #946152; }
+
+/* Responsive composition, no hidden primary actions. */
+@media (min-width: 1700px) {
+  .login-page { grid-template-columns: minmax(0,1fr) 490px; }
+  .login-panel { padding: 65px; }
+  .login-story { padding-top: 110px; }
+  .map-card-media { height: 205px; }
+}
+@media (max-width: 1250px) {
+  .app-shell { grid-template-columns: 204px minmax(0,1fr); }
+  .expedition-sidebar { padding: 28px 12px 16px; }
+  .brand-text strong { font-size: 21px; }
+  .site-main { padding: 26px 24px 40px; }
+  .workspace-header { padding: 15px 24px; }
+  .map-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .play-layout { grid-template-columns: minmax(0,1fr); }
+  .play-side { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); align-items: start; }
+  .play-main { display: grid; grid-template-columns: minmax(0,1fr); }
+  .login-page { grid-template-columns: minmax(0,1fr) 390px; }
+  .login-panel { padding: 35px 28px; }
+  .login-brand-row { padding: 28px; }
+  .login-story { padding: 70px 28px 0; }
+  .login-story h1 { font-size: 52px; }
+  .login-story > p { font-size: 14px; max-width: 40ch; }
+  .expedition-intro { padding: 28px; }
+  .editor-layout { grid-template-columns: minmax(0,1fr); }
+  .editor-sidebar { display: block; }
+  .profile-stat-card { padding: 15px; }
+}
+@media (max-width: 900px) {
+  .app-shell { display: flex; flex-direction: column; }
+  .expedition-sidebar { position: relative; top: auto; height: auto; display: grid; grid-template-columns: 1fr auto; padding: 18px 24px 0; gap: 18px; border-right: 0; border-bottom: 1px solid #34464a; }
+  .expedition-sidebar > .brand { padding: 0; }
+  .main-nav { grid-column: 1 / -1; grid-row: 2; flex-direction: row; gap: 8px; }
+  .nav-link { padding: 11px 13px; border-radius: 7px 7px 0 0; border-bottom: 0; font-size: 12px; gap: 9px; }
+  .nav-arrow { display: none; }
+  .sidebar-expedition { display: none; }
+  .sidebar-account { padding: 0; border: 0; grid-column: 2; grid-row: 1; max-width: 180px; }
+  .sidebar-account > div { display: none; }
+  .workspace-header { min-height: 60px; padding: 11px 24px; position: relative; }
+  .login-page { grid-template-columns: minmax(0,1fr) 360px; }
+  .login-brand-row { align-items: flex-start; flex-direction: column; gap: 18px; }
+  .login-story { padding-top: 45px; }
+  .login-story h1 { font-size: 43px; }
+  .desktop-break { display: none; }
+  .expedition-hero-content { padding: 30px; }
+}
+@media (max-width: 700px) {
+  .login-page { display: flex; flex-direction: column; }
+  .login-hero { min-height: 690px; height: 88svh; max-height: 850px; }
+  .login-scene { background-position: 100% center; }
+  .login-brand-row { flex-direction: row; align-items: center; padding: 23px; gap: 12px; }
+  .login-brand-row .brand-text > span { display: none; }
+  .login-brand-row .brand-icon { width: 27px; }
+  .login-brand-row .brand-icon .game-icon { width: 28px; }
+  .login-brand-row .brand-text strong { font-size: 22px; }
+  .login-story { padding: 55px 25px 0; }
+  .login-story h1 { font-size: clamp(40px,8.5vw,60px); max-width: 12ch; }
+  .login-story > p { max-width: 33ch; font-size: 14px; }
+  .login-mobile-cta { display: inline-flex; margin-top: 8px; }
+  .expedition-intro { padding: 24px; gap: 12px; }
+  .expedition-intro p { font-size: 11px; }
+  .login-panel { min-height: 0; padding: 40px 28px; }
+  .login-card { max-width: 420px; margin: 0 auto; }
+  .auth-emblem { display: none; }
+  .auth-tabs { flex-direction: row; gap: 28px; margin-bottom: 28px; }
+  .auth-tabs button { flex: 0 1 auto; }
+  .login-panel .competition-note { max-width: 420px; margin: 32px auto 0; }
+  .site-main { padding: 24px 18px 38px; }
+  .page { gap: 22px; }
+  .page-heading h1 { font-size: 27px; }
+  .page-heading .btn,.page-heading .button-row .btn { width: auto; }
+  .page-heading-with-action { align-items: flex-start; }
+  .site-footer { padding: 20px; text-align: left; }
+  .workspace-header { padding: 12px 18px; }
+  .workspace-header > div:first-child { font-size: 11px; gap: 8px; }
+  .winter-season { display: none; }
+  .expedition-sidebar { padding: 18px 18px 0; gap: 14px; }
+  .sidebar-account { gap: 5px; }
+  .user-avatar { width: 30px; height: 30px; font-size: 12px; }
+  .main-nav { gap: 4px; }
+  .nav-link { flex: 1; justify-content: center; font-size: 11px; gap: 7px; padding: 12px 8px; }
+  .nav-link .game-icon { width: 17px; height: 17px; }
+  .expedition-hero { min-height: 370px; align-items: flex-start; background-position: 100% center; }
+  .expedition-hero-content { padding: 28px 24px 58px; max-width: 100%; }
+  .expedition-hero h2 { font-size: 42px; }
+  .expedition-hero p { font-size: 12px; max-width: 32ch; text-shadow: 0 2px 8px #07141c; }
+  .hero-caption { left: 24px; right: auto; font-size: 9px; }
+  .expedition-summary { gap: 13px 22px; font-size: 11px; padding-bottom: 22px; }
+  .expedition-summary > span { flex-basis: calc(50% - 11px); font-size: 11px; gap: 5px; }
+  .expedition-summary strong { font-size: 14px; }
+  .section-heading h2 { font-size: 20px; }
+  .maps-toolbar { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+  .maps-toolbar .search-field { flex: 1 1 100%; min-width: 0; }
+  .map-sort { flex: 1 1 170px; max-width: none; width: auto; }
+  .maps-toolbar .toggle-field { flex: 1 1 130px; justify-content: center; }
+  .map-grid { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .map-card-media { height: 190px; }
+  .map-card-body { padding: 22px; }
+  .map-card-heading h2 { font-size: 20px; }
+  .map-description { font-size: 13px; min-height: 0; }
+  .map-card-actions .btn-primary { min-height: 41px; }
+  .play-layout,.play-side { display: flex; flex-direction: column; gap: 20px; }
+  .play-side > * { width: 100%; }
+  .panel { padding: 17px; }
+  .panel-header { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .panel-header h2 { font-size: 17px; }
+  .panel-header-actions { justify-content: flex-start; gap: 8px; }
+  .map-stage,.editor-board-wrap { padding: 9px; border-width: 5px; }
+  .run-stats { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .run-stat { padding: 10px 8px; }
+  .run-stat-label { font-size: 9px; line-height: 1.5; }
+  .run-stat strong { font-size: 17px; }
+  .legend-note { margin-left: 0; flex-basis: 100%; font-size: 10px; }
+  .program-toolbar { display: flex; }
+  .program-toolbar select { flex-basis: 100%; width: 100%; }
+  .program-toolbar .btn { flex: 1; min-height: 35px; }
+  .code-editor { height: 350px; --code-font-size: 12px; --code-line-height: 23px; }
+  .code-highlight,.code-textarea { padding: 14px 10px; }
+  .code-gutter { min-width: 2.6rem; padding: 14px 7px; }
+  .run-controls { display: flex; gap: 9px; }
+  .run-controls .btn-run { flex-basis: 55%; }
+  .speed-field { width: 100%; justify-content: space-between; }
+  .speed-field select { width: auto; flex: 1; }
+  .editor-page > .page-heading { padding: 22px; }
+  .editor-layout { display: flex; flex-direction: column; }
+  .editor-layout > * { width: 100%; }
+  .editor-toolbar { gap: 6px; }
+  .tool-button { flex: 1 1 40%; justify-content: flex-start; }
+  .profile-identity { padding: 24px; gap: 18px; align-items: flex-start; }
+  .profile-robot { flex-basis: 60px; height: 70px; }
+  .profile-identity h1 { font-size: 25px; }
+  .profile-identity .page-lead { font-size: 12px; }
+  .profile-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .profile-stat-card { border-bottom: 1px solid #3e5558; padding: 18px; }
+  .profile-stat-card:last-child { grid-column: 1 / -1; border-bottom: 0; }
+  .run-card { grid-template-columns: minmax(0,1fr); padding: 18px; }
+  .run-card-actions { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mine-art,.map-robot,.progress-fill { transition: none; }
+}
+
+/* Keep snow around the controls, never over the working surface. */
+.expedition-hero, .play-layout, .editor-layout, .profile-stats, .run-list, .map-card { position: relative; z-index: 5; }

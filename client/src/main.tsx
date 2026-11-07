@@ -18,6 +18,8 @@ import './styles/editor.css';
 import './styles/utilities.css';
 import './styles/animations.css';
 import './styles/responsive.css';
+import './styles/winter.css';
+import './styles/expedition.css';
 
 const container = document.getElementById('root');
 if (!container) {

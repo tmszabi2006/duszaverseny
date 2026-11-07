@@ -87,6 +87,18 @@ Először regisztrálni kell; utána a **Térképek** oldal érhető el.
    validátort használja; hiba esetén a korábbi tartalom megmarad, és érthető, sorszámot is
    tartalmazó üzenet jelenik meg.
 
+## Téli kiegészítés és használhatósági javítások
+
+- Új expedíciós megjelenés: havas bányabejárat, lámpafény, feldíszített fenyő, saját bányászrobot és illusztrált tárnák.
+- Többrétegű, szélben sodródó canvas-havazás, megjegyzett kikapcsolt / finom / erősebb fokozattal. Csökkentett mozgás beállításnál
+  nem jelenik meg; háttérbe tett böngészőlapon szünetel.
+- A térképszerkesztő mezői Tab billentyűvel elérhetők, Enterrel vagy szóközzel festhetők.
+  A nyílbillentyűkkel a szomszédos mezőre lehet lépni.
+- Méretcsökkentéskor a robot új mezője mindig üres kamra marad.
+- A későn érkező futási és ranglista-válaszok nem írják felül az új pálya állapotát.
+- A futások lekérdezése a futás tulajdonosát is betölti, így a saját megoldás
+  idegen pályán is hozzáférhető. A jogosultságokat külön regressziós teszt ellenőrzi.
+
 ## Fejlesztési ötletek
 
 - Megoldások közzététele és összehasonlítása a ranglistából.

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './auth';
 import { Layout } from './components/Layout';
@@ -8,6 +8,7 @@ import { MapsPage } from './pages/MapsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PlayPage } from './pages/PlayPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { WinterProvider } from './components/Winter';
 
 function FullPageLoader() {
   return (
@@ -30,7 +31,13 @@ function RequireAuth({ children }: { children: ReactNode }) {
 }
 
 export function App() {
+  const { pathname } = useLocation();
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
+
   return (
+    <WinterProvider>
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route
@@ -48,5 +55,6 @@ export function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+    </WinterProvider>
   );
 }

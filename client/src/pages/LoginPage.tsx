@@ -2,7 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ApiError } from '../api';
 import { useAuth } from '../auth';
-import { PickaxeLogo } from '../components/Logo';
+import { GameIcon } from '../components/GameIcon';
+import { WeatherControl } from '../components/Winter';
 
 export function LoginPage() {
   const { user, loading, login, register } = useAuth();
@@ -78,85 +79,33 @@ export function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-background" aria-hidden="true">
-        <div className="lamp-glow" />
-        <div className="tunnel-lines" />
-      </div>
-
       <section className="login-hero">
-        <div className="login-hero-inner">
-          <div className="brand brand-large">
-            <span className="brand-icon" aria-hidden="true">
-              <PickaxeLogo />
-            </span>
-            <span className="brand-text">
-              <strong>MineScript</strong>
-              <span>Bányászrobot szimulátor</span>
-            </span>
-          </div>
-
-          <h1>
-            A mélyben
-            <br />
-            <span className="text-gold">a kód számít.</span>
-          </h1>
-          <p className="login-lead">
-            Írj MineScript programot, vezesd végig a robotot a tárnákon, bányássz ki minden
-            aranyrögöt, és szerezz helyet a ranglistán. A cél nem az, hogy gyorsan fuss, hanem hogy
-            okosan.
-          </p>
-
-          <ul className="feature-list">
-            <li>
-              <span className="feature-icon">01</span>
-              <span>
-                <strong>Valódi interpreter</strong> – a szerver ugyanazzal a motorral ellenőrzi
-                minden futásodat.
-              </span>
-            </li>
-            <li>
-              <span className="feature-icon">02</span>
-              <span>
-                <strong>Élő animáció</strong> – lépésről lépésre követheted a robotot, a kiírt
-                szöveget és az aktuális programsort.
-              </span>
-            </li>
-            <li>
-              <span className="feature-icon">03</span>
-              <span>
-                <strong>Saját térképek</strong> – építs pályát, oszd meg a közösséggel, és nézd meg,
-                ki oldja meg a legjobban.
-              </span>
-            </li>
-          </ul>
-
-          <pre className="login-code" aria-label="MineScript példakód">
-            <code>
-              <span className="tok-keyword">set</span> arany <span className="tok-keyword">to</span>{' '}
-              <span className="tok-number">0</span>
-              {'\n'}
-              <span className="tok-keyword">step</span>{' '}
-              <span className="tok-keyword">forward</span> <span className="tok-number">3</span>
-              {'\n'}
-              <span className="tok-keyword">mine</span> <span className="tok-keyword">here</span>
-              {'\n'}
-              <span className="tok-keyword">set</span> fal{' '}
-              <span className="tok-keyword">to</span> <span className="tok-keyword">isThere</span>{' '}
-              <span className="tok-number">1</span>
-              {'\n'}
-              <span className="tok-keyword">print</span> fal
-            </code>
-          </pre>
+        <div className="login-scene" aria-hidden="true" />
+        <header className="login-brand-row">
+          <a href="/login" className="brand" aria-label="MineScript kezdőlap">
+            <span className="brand-icon"><GameIcon name="mine" /></span>
+            <span className="brand-text"><strong>MineScript<span>.</span></strong><span>Bányászrobot szimulátor</span></span>
+          </a>
+          <WeatherControl />
+        </header>
+        <div className="login-story">
+          <h1>A kaland mélyén.<br /><span>Te írod a kódot.</span></h1>
+          <p>Odakint hull a hó. A hegy gyomrában arany vár.<br className="desktop-break" /> Programozd be a robotod, és hozd felszínre a kincset.</p>
+          <a className="login-mobile-cta btn btn-primary" href="#auth-title">Irány a bánya <GameIcon name="arrow" /></a>
+        </div>
+        <div className="expedition-intro">
+          <span className="intro-symbol"><GameIcon name="code" /></span>
+          <div><strong>Egy robot. A te programod.</strong><p>Írj kódot · Fedezz fel tárnákat · Gyűjts aranyat</p></div>
         </div>
       </section>
-
       <section className="login-panel" aria-labelledby="auth-title">
         <div className="login-card">
-          <div className="auth-tabs" role="tablist" aria-label="Bejelentkezés vagy regisztráció">
+          <div className="auth-emblem" aria-hidden="true"><GameIcon name="pickaxe" /></div>
+          <div className="auth-tabs" role="group" aria-label="Bejelentkezés vagy regisztráció">
             <button
               type="button"
-              role="tab"
-              aria-selected={mode === 'login'}
+              
+              aria-pressed={mode === 'login'}
               className={mode === 'login' ? 'active' : ''}
               onClick={() => switchMode('login')}
             >
@@ -164,8 +113,8 @@ export function LoginPage() {
             </button>
             <button
               type="button"
-              role="tab"
-              aria-selected={mode === 'register'}
+              
+              aria-pressed={mode === 'register'}
               className={mode === 'register' ? 'active' : ''}
               onClick={() => switchMode('register')}
             >
@@ -174,11 +123,11 @@ export function LoginPage() {
           </div>
 
           <h2 id="auth-title">
-            {mode === 'login' ? 'Jó újra a bányában!' : 'Csatlakozz a bányászokhoz'}
+            {mode === 'login' ? 'Indulhat a kaland?' : 'Légy te is bányász!'}
           </h2>
           <p className="muted">
             {mode === 'login'
-              ? 'Add meg a bányászazonosítódat, és folytasd ott, ahol abbahagytad.'
+              ? 'Lépj be, és vedd át a robot irányítását.'
               : 'Hozz létre egy fiókot, hogy menthesd a programjaidat és eredményeidet.'}
           </p>
 
@@ -191,8 +140,7 @@ export function LoginPage() {
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 autoComplete="username"
-                autoFocus
-                maxLength={24}
+                                maxLength={24}
                 placeholder="pl. AranyAnna"
                 required
               />

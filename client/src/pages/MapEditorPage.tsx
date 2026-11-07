@@ -201,6 +201,7 @@ export function MapEditorPage() {
         row: Math.min(previous.robot.row, height - 1),
         col: Math.min(previous.robot.col, width - 1),
       };
+      cells[robot.row][robot.col] = 'empty';
       return { width, height, cells, robot };
     });
     setSaveMessage(null);
@@ -352,11 +353,10 @@ export function MapEditorPage() {
     <div className="page editor-page">
       <div className="page-heading page-heading-with-action">
         <div>
-          <p className="eyebrow">{isNew ? 'Új pálya' : 'Pályaszerkesztő'}</p>
           <h1>{isNew ? 'Építs új tárnát' : name || 'Névtelen térkép'}</h1>
           <p className="page-lead">
-            Kattints vagy húzd az egeret a rácsra a festéshez. A robot mindig pontosan egy mezőn
-            áll, és a pálya mentésekor a szerver is ellenőrzi.
+            A következő kalandot te tervezed. Helyezd el a sziklákat, rejtsd el az aranyat,
+            és jelöld ki a robot indulóhelyét.
           </p>
         </div>
         <div className="button-row">
@@ -424,6 +424,7 @@ export function MapEditorPage() {
               interactive
               ariaLabel={`Szerkeszthető térkép, ${map.height} sor és ${map.width} oszlop.`}
               onCellPointerDown={handleCellPointerDown}
+              onCellActivate={paintCell}
               onCellPointerEnter={handleCellPointerEnter}
             />
           </div>

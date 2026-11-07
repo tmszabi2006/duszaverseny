@@ -6,6 +6,7 @@ import {
   type RobotState,
 } from '@minescript/shared';
 import type { CSSProperties } from 'react';
+import { MiningRobot } from './GameIcon';
 
 interface MapViewProps {
   map: GameMap;
@@ -19,6 +20,7 @@ interface MapViewProps {
   interactive?: boolean;
   onCellPointerDown?: (row: number, col: number) => void;
   onCellPointerEnter?: (row: number, col: number) => void;
+  onCellActivate?: (row: number, col: number) => void;
 }
 
 const ROTATION: Record<RobotState['direction'], number> = {
@@ -39,6 +41,7 @@ export function MapView({
   interactive = false,
   onCellPointerDown,
   onCellPointerEnter,
+  onCellActivate,
 }: MapViewProps) {
   const activeRobot = robot ?? map.robot;
   const activeCells = cells ?? map.cells;
@@ -53,6 +56,7 @@ export function MapView({
         aspectRatio: `${width} / ${height}`,
         '--cols': width,
         '--rows': height,
+        '--map-max-width': `${Math.min(720, 520 * width / height)}px`,
       } as CSSProperties}
       role={interactive ? 'group' : 'img'}
       aria-label={
@@ -73,6 +77,23 @@ export function MapView({
             <div
               key={`${rowIndex}:${colIndex}`}
               className={`map-cell ${cellClassName}`}
+              role={interactive ? 'button' : undefined}
+              tabIndex={interactive ? 0 : undefined}
+              aria-label={interactive ? `${rowIndex + 1}. sor, ${colIndex + 1}. oszlop: ${activeRobot.row === rowIndex && activeRobot.col === colIndex ? 'robot' : cellKindLabel(kind)}` : undefined}
+              onKeyDown={interactive ? (event) => {
+                const offsets: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -width, ArrowDown: width };
+                if (event.key in offsets) {
+                  event.preventDefault();
+                  const index = rowIndex * width + colIndex + offsets[event.key];
+                  if (index >= 0 && index < width * height) {
+                    (event.currentTarget.parentElement?.children[index] as HTMLElement)?.focus();
+                  }
+                }
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onCellActivate?.(rowIndex, colIndex);
+                }
+              } : undefined}
               title={`${rowIndex + 1}. sor, ${colIndex + 1}. oszlop: ${
                 hidden ? 'még nem felderített mező' : cellKindLabel(kind)
               }`}
@@ -106,9 +127,7 @@ export function MapView({
         }
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M12 2.2 20.4 20.4 12 16.2 3.6 20.4Z" />
-        </svg>
+        <MiningRobot />
       </div>
     </div>
   );

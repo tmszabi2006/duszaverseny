@@ -238,19 +238,23 @@ export function PlayPage() {
   const inFlightTokensRef = useRef(new Set<number>());
   const consoleRef = useRef<HTMLDivElement>(null);
   const programFileRef = useRef<HTMLInputElement>(null);
+  const leaderboardRequestRef = useRef(0);
 
   const loadLeaderboard = useCallback(async (targetMapId: number) => {
+    const request = ++leaderboardRequestRef.current;
     setLeaderboardLoading(true);
     setLeaderboardError(null);
     try {
       const response = await api.leaderboard(targetMapId);
+      if (request !== leaderboardRequestRef.current) return;
       setLeaderboard(response.entries);
     } catch (cause) {
+      if (request !== leaderboardRequestRef.current) return;
       setLeaderboardError(
         cause instanceof ApiError ? cause.message : 'A ranglista betöltése nem sikerült.',
       );
     } finally {
-      setLeaderboardLoading(false);
+      if (request === leaderboardRequestRef.current) setLeaderboardLoading(false);
     }
   }, []);
 
@@ -311,6 +315,9 @@ export function PlayPage() {
     void load();
     return () => {
       active = false;
+      runTokenRef.current++;
+      leaderboardRequestRef.current++;
+      currentRunRef.current = null;
     };
   }, [mapId, loadLeaderboard]);
 
@@ -398,6 +405,7 @@ export function PlayPage() {
   }, [status, submission, submitRun]);
 
   function resetRunState(nextMap: GameMap | null = gameMap) {
+    runTokenRef.current++;
     setStatus('idle');
     setSubmission('idle');
     setSubmitError(null);
@@ -468,6 +476,7 @@ export function PlayPage() {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
+    const token = ++runTokenRef.current;
 
     setImportError(null);
     setImportMessage(null);
@@ -487,6 +496,7 @@ export function PlayPage() {
     void file
       .text()
       .then((text) => {
+        if (token !== runTokenRef.current) return;
         if (text.length > 20000) {
           setImportError('A program legfeljebb 20 000 karakter lehet.');
           return;
@@ -501,7 +511,9 @@ export function PlayPage() {
         setSource(text);
         setImportMessage(`Program betöltve: ${file.name}`);
       })
-      .catch((cause) => setImportError(errorMessage(cause)));
+      .catch((cause) => {
+        if (token === runTokenRef.current) setImportError(errorMessage(cause));
+      });
   }
 
   function handleProgramExport() {
@@ -519,6 +531,7 @@ export function PlayPage() {
   }
 
   function handleSourceChange(value: string) {
+    runTokenRef.current++;
     setSource(value);
     setParseError(null);
     setImportMessage(null);
@@ -659,7 +672,7 @@ export function PlayPage() {
           <section className="panel map-panel" aria-labelledby="map-title">
             <div className="panel-header">
               <div>
-                <h2 id="map-title">A tárna</h2>
+                <h2 id="map-title">A tárna · élő robotnézet</h2>
                 <p className="panel-subtitle">
                   A robot a {sim.robot.row + 1}. sor {sim.robot.col + 1}. oszlopában áll, arccal{' '}
                   {DIRECTION_LABELS_HU[sim.robot.direction]} felé.
@@ -827,7 +840,7 @@ export function PlayPage() {
           <section className="panel program-panel" aria-labelledby="program-title">
             <div className="panel-header">
               <div>
-                <h2 id="program-title">Program</h2>
+                <h2 id="program-title">Robotprogram</h2>
                 <p className="panel-subtitle">
                   MineScript · {source.split('\n').length} sor · legfeljebb{' '}
                   {MAX_PROCESSED_LINES} feldolgozott programsor
@@ -944,6 +957,7 @@ export function PlayPage() {
             <p className="shortcut-hint">
               Tipp: a <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (macon <kbd>⌘</kbd> + <kbd>Enter</kbd>)
               azonnal elindítja a programot.
+              {' '}Kilépés a szerkesztőből billentyűzettel: <kbd>Esc</kbd>, majd <kbd>Tab</kbd>.
             </p>
 
             <div className={`verification-row verification-${submission}`}>
@@ -980,6 +994,16 @@ export function PlayPage() {
                 </div>
               )}
             </div>
+            <details className="language-guide">
+              <summary>MineScript súgó · az első lépések</summary>
+              <dl>
+                <dt><code>step forward 1</code></dt><dd>Egy mezővel előre.</dd>
+                <dt><code>turn by 1</code></dt><dd>Negyedfordulat balra.</dd>
+                <dt><code>mine here</code></dt><dd>Arany bányászása a robot alatt.</dd>
+                <dt><code>set x to isThere 2</code></dt><dd>Van arany a következő mezőn?</dd>
+              </dl>
+              <p>A mintaprogramok között teljes példákat is találsz.</p>
+            </details>
           </section>
 
           <Leaderboard

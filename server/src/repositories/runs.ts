@@ -14,6 +14,7 @@ export interface NewRun {
 
 interface RunRow extends RowDataPacket {
   id: number;
+  user_id: number;
   map_id: number;
   map_name: string;
   program_source: string;
@@ -62,7 +63,7 @@ export function serializeRun(row: RunRow) {
 }
 
 const RUN_SELECT = `
-  SELECT r.id, r.map_id, m.name AS map_name, r.program_source, r.gold, r.steps,
+  SELECT r.id, r.user_id, r.map_id, m.name AS map_name, r.program_source, r.gold, r.steps,
          r.error_code, r.error_line, r.error_message, r.created_at
   FROM runs r
   JOIN maps m ON m.id = r.map_id

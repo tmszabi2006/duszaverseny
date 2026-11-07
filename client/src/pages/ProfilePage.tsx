@@ -5,6 +5,7 @@ import { useAuth } from '../auth';
 import { saveDraft } from '../drafts';
 import type { Run, RunStats } from '../types';
 import { formatDate } from '../utils';
+import { MiningRobot } from '../components/GameIcon';
 
 function RunRow({ run }: { run: Run }) {
   const navigate = useNavigate();
@@ -95,14 +96,16 @@ export function ProfilePage() {
   }, []);
 
   return (
-    <div className="page">
-      <div className="page-heading">
-        <p className="eyebrow">Bányászprofil</p>
-        <h1>{user?.username}</h1>
+    <div className="page profile-page">
+      <div className="profile-identity">
+        <div className="profile-robot"><MiningRobot /></div>
+        <div className="page-heading">
+        <h1>{user?.username} bányásznaplója</h1>
         <p className="page-lead">
           Itt látod a futásaidat, a begyűjtött aranyat és az utolsó programjaidat. Bármelyik
           korábbi programot visszatöltheted a szerkesztőbe.
         </p>
+        </div>
       </div>
 
       {error && (

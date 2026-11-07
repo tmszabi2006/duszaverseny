@@ -58,14 +58,13 @@ export function MapView({
     >
       {activeCells.map((row, rowIndex) =>
         row.map((kind, colIndex) => {
-          // Csak a felfedezett mezőket mutatjuk tisztán.
           const hidden = discovered ? !discovered[rowIndex]?.[colIndex] : false;
           return (
             <div
               key={`${rowIndex}:${colIndex}`}
               className={`map-cell ${hidden ? 'map-cell-hidden' : `map-cell-${kind}`}`}
               title={`${rowIndex + 1}. sor, ${colIndex + 1}. oszlop: ${
-                hidden ? 'Feltérképezetlen terület' : cellKindLabel(kind)
+                hidden ? 'még nem felderített mező' : cellKindLabel(kind)
               }`}
               onPointerDown={
                 interactive && onCellPointerDown
@@ -78,16 +77,14 @@ export function MapView({
                   : undefined
               }
             >
-              {/* Vizuális aranyrög indikátor (letisztult) */}
               {!hidden && kind === 'gold' && (
-                <div className="gold-nugget-icon" aria-hidden="true" />
+                <span className="gold-nugget" aria-hidden="true" />
               )}
             </div>
           );
         }),
       )}
 
-      {/* Robot SVG marker, sima átmenettel forgatva */}
       <div
         className="map-robot"
         style={
@@ -99,8 +96,8 @@ export function MapView({
         }
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.2 20.4 20.4 12 16.2 3.6 20.4Z" />
         </svg>
       </div>
     </div>

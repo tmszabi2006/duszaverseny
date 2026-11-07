@@ -2570,6 +2570,25 @@ kbd {
 }
 
 /* --------------------------------------------------------------------------
+   Kódszerkesztő – a kód sosem halványulhat el vagy sötétülhet
+   -------------------------------------------------------------------------- */
+
+/* A kódszerkesztőben megjelenített kód (kiemelő réteg + gépelési réteg)
+   mindig teljes opacitással maradjon látszó. Semmilyen állapotban
+   (szerkesztés, futás közben, csak-olvasható mód) ne legyen elhalványult,
+   sötétedett vagy szürkített, és ne alkalmazódjon rá szűrő. */
+.code-editor,
+.code-editor.is-readonly,
+.code-highlight,
+.code-highlight-readonly,
+.code-textarea,
+.code-line,
+.code-gutter-line {
+  opacity: 1;
+  filter: none;
+}
+
+/* --------------------------------------------------------------------------
    Segédosztályok
    -------------------------------------------------------------------------- */
 

@@ -1,216 +1,309 @@
 # MineScript – bányászrobot-szimulátor
 
-Webes játék a **Dusza Árpád Országos Programozói Emlékverseny 2026/2027. évi I. fordulójára**, melyet egy **három fős csapat** fejlesztett.
+A **Bugvadászok** csapat webes játéka a **Dusza Árpád Országos Programozói Emlékverseny 2026/2027. évi I. fordulójára**.
 
-A játékos MineScript nyelven programozza a bányászrobotot: a programot a szerkesztőben megírhatja vagy fájlból importálhatja, a futást animációval követheti, a szerver pedig függetlenül újrafuttatja és hitelesíti az eredményt. A térképek saját szerkesztővel készíthetők, és minden térképhez ranglista tartozik.
+A játékos MineScript nyelven irányít egy bányászrobotot: programot ír vagy importál, animációval követi a futást, és aranyat gyűjt. A böngészőben futó szimuláció mellett a szerver önállóan újrafuttatja a beküldött programot; a mentett eredmény és a ranglista ebből a szerveroldali számításból készül. Saját térképek is szerkeszthetők, importálhatók és megoszthatók.
 
-## Csapat (három fős verseny-csapat)
+## Csapat
 
-A MineScript a versenyre három fős csapat munkájaként készült. A csapat tagjai és szerepkörei:
+**Csapatnév: Bugvadászok**
 
-- **Projektvezetés, backend, adatbázis, dokumentáció** – [Név 1]
-- **Kliens felület, térképnézet, animáció, CSS rendszer** – [Név 2]
-- **Tervezés, tesztelés, QA, teljesítmény** – [Név 3]
-
-A fenti nevéket a csapat valódi tagjainak nevével egészítsd ki a beadás előtt.
+- Tóth-Mikita Szabolcs
+- Szolár Ádám
+- Debreczeni Kristóf
 
 ## Fő funkciók
 
-- **Fiókkezelés** – regisztráció, bejelentkezés, kijelentkezés, HttpOnly cookie-ban tárolt JWT-munkamenet, bcrypt jelszóhash, bejelentkezési és futtatási rate limit.
-- **Térképlista** – keresés név, leírás és készítő szerint, „csak a sajátjaim” szűrő, rendszer- és privát térképek jelölése.
-- **Térképszerkesztő** – fal, arany, üres mező és robot festése húzással, átméretezés 1–15 sor/oszlop között, robotirány állítása, import/export szöveges fájlból.
-- **Programszerkesztő** – szintaxiskiemelés, sorszámok, mintaprogramok, import/export, automatikus piszkozatmentés a böngészőben.
-- **Futtatás és animáció** – lépésenkénti robotmozgás, felfedezett terület, begyűjtött arany, aktuális programsor kiemelése, konzol, lassú/normál/gyors/azonnali sebesség, leállítás.
-- **Térkép látogatási módok** – alapértelmezésben a felderítetlen falak és aranynak halványan látszanak; kapcsolható „teljes sötétség” mód, ahol csak a robot által már felfedezett mezők látszanak, a többi teljesen sötét marad.
-- **Hitelesített eredmény** – a kliens csak animál; a beküldött programot a szerver ugyanazzal a közös interpreterrel futtatja újra, és az így kapott arany-/lépésszám kerül az adatbázisba.
-- **Ranglista** – térképenként minden játékos legjobb futása; több arany előrébb, azonos aranymennyiségnél kevesebb feldolgozott programsor előrébb.
-- **Profil** – összesített statisztikák és a legutóbbi 50 futás; korábbi program egy kattintással visszatölthető a szerkesztőbe.
-- **Kész játékkörnyezet** – az adatbázis inicializálása öt rendszer-térképet tesz elérhetővé, a kliens pedig pályánként mintaprogramokat kínál az azonnali kipróbáláshoz.
+- **Fiókkezelés:** regisztráció, bejelentkezés és kijelentkezés; HttpOnly, SameSite=Lax cookie-ban tárolt JWT-munkamenet; bcrypt jelszóhash és kérésgyakoriság-korlátozás a hitelesítési és futtatási műveleteknél.
+- **Térképlista:** keresés név, leírás és készítő szerint; saját pályák szűrése; rendezés frissítés, aranymennyiség vagy név szerint; rendszer-, saját és privát térképek jelölése.
+- **Pályaműhely:** 1–15 sorból és 1–15 oszlopból álló térképek készítése; fal, üres mező, arany és robot elhelyezése; robotirány beállítása; szöveges import és export. A mezők egérrel és billentyűzettel is szerkeszthetők.
+- **Robotprogram:** szintaxiskiemelés, sorszámozás, behúzáskezelés, mintaprogramok, saját program, import és export. A kódot a böngésző pályánként megjegyzi; a külön saját program mintaváltás után is visszatölthető.
+- **Futás és animáció:** robotmozgás, felfedezett mezők, aranyhaladás, aktuális programsor, konzol, valamint lassú, normál, gyors és azonnali mód. A sebesség futás közben is váltható. Az azonnali mód közvetlenül a végállapotot mutatja.
+- **Automatikus befejezés:** az utolsó aranyrög kibányászásakor a program sikeresen véget ér, cikluson belül is.
+- **Térképnézet:** alapértelmezésben a felderítetlen falak és aranyrögök halványan láthatók. A „Sötét mód” bekapcsolásakor csak a már felfedezett mezők látszanak.
+- **Hitelesített eredmények:** a szerver a program forrásából számolja az arany- és lépésszámot; a kliens által megadott pontszámot nem használja.
+- **Ranglista:** térképenként minden játékos legjobb futása szerepel. Több arany jobb helyezést jelent; azonos aranymennyiségnél a kevesebb feldolgozott programsor dönt.
+- **Bányásznapló:** összesített statisztikák, a legutóbbi 50 futás és korábbi programok visszatöltése.
+- **Téli megjelenés:** sötét, arany kiemelésű felület, bányászrobot, havas nyitókép és 15 térképkártya-illusztráció. A képek a pályaazonosító alapján váltakoznak, nem a pálya tényleges alaprajzát ábrázolják.
+- **Havazás:** kikapcsolt, finom és sűrű fokozat, megjegyzett beállítással. A háttérbe tett böngészőlapon az animáció szünetel; a rendszer csökkentett mozgás beállítását is figyelembe veszi.
+
+## Alappályák
+
+Az adatbázis inicializálása hat rendszerpályát készít elő:
+
+| Pálya | Méret (oszlop × sor) | Aranyrögök |
+| --- | --- | --- |
+| Hajnalcsillag-tárna | 15 × 3 | 3 |
+| Deres szikla | 15 × 3 | 2 |
+| Jégcsap-akna | 7 × 7 | 2 |
+| Fagyos kanyarulat | 11 × 11 | 5 |
+| Északi aranymély | 15 × 15 | 10 |
+| Örökfagy labirintusa | 15 × 15 | 18 |
+
+Az első három pályához külön útvonalat bemutató mintaprogram tartozik. A Szintaxis-bemutató minden pályán elérhető, de nem megoldóprogram. A „Saját program” minden pályán használható; külön pályaspecifikus minta hiányában új piszkozatként üres szerkesztővel indul.
 
 ## Gyors indítás fejlesztéshez
 
-Előfeltételek: **Node.js 20+** (ajánlott: 24), **npm**, **MySQL 8**.
+Szükséges: Node.js és npm, valamint futó MySQL 8 szolgáltatás. A helyi fejlesztés Node.js 24-gyel történt; a projekt gyökércsomagja legalább Node.js 20-at ír elő, de a függőségek pontos követelményeit is teljesíteni kell.
+
+Minden parancsot a projekt gyökérmappájából futtass, ahol a `package.json` található. A meglévő `server/.env` fájlt ne írd felül egy már beállított telepítésen.
+
+### 1. Függőségek és konfiguráció
+
+Linuxon vagy macOS-en, új telepítésnél:
 
 ```bash
-npm install
+npm ci
 cp server/.env.example server/.env
 ```
 
-A `server/.env` fájlban legalább ezeket állítsd be:
+Windows PowerShellben, a helyi projektútvonallal:
+
+```powershell
+cd C:\duszaverseny-main
+npm.cmd ci
+Copy-Item server/.env.example server/.env
+```
+
+PowerShellben az `npm.cmd` használható akkor is, ha a rendszer nem engedi az `npm.ps1` szkript futtatását. A további `npm` parancsok ugyanígy helyettesíthetők `npm.cmd`-vel.
+
+A `server/.env` helyi, közvetlen HTTP-s fejlesztéshez például az alábbi értékeket tartalmazza:
 
 ```dotenv
 NODE_ENV=development
+PORT=3000
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USER=minescript
-DB_PASSWORD=helyi-jelszo
+DB_PASSWORD=ide-kerul-a-helyi-adatbazisjelszo
 DB_NAME=minescript
 DB_POOL_SIZE=10
-JWT_SECRET=legalabb-32-karakteres-veletlen-titok
+JWT_SECRET=ide-kerul-a-generalttitok
 COOKIE_SECURE=false
 TRUST_PROXY=0
 ```
 
-Ezután hozd létre az adatbázist és a felhasználót (MySQL 8):
+A jelszót és a JWT-titkot saját értékkel töltsd ki. Véletlen titok generálása:
 
-```sql
-CREATE DATABASE minescript CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'minescript'@'localhost' IDENTIFIED BY 'helyi-jelszo';
-GRANT ALL PRIVILEGES ON minescript.* TO 'minescript'@'localhost';
-FLUSH PRIVILEGES;
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
 ```
 
-Adatbázisséma és demótérképek létrehozása:
+A `JWT_SECRET` értékéhez másold a kimenetet. Éles módban a szerver legalább 32 karakteres titkot követel meg. A `.env` fájlt ne tedd nyilvános verziókezelésbe.
+
+### 2. MySQL előkészítése
+
+Az alábbi SQL egy új, helyi adatbázis és alkalmazásfelhasználó létrehozására szolgál. MySQL-adminisztrátori kapcsolattal futtasd; a jelszó egyezzen a `.env` fájlban megadottal.
+
+```sql
+CREATE DATABASE minescript
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'minescript'@'localhost'
+  IDENTIFIED BY 'ide-kerul-a-helyi-adatbazisjelszo';
+GRANT ALL PRIVILEGES ON minescript.* TO 'minescript'@'localhost';
+```
+
+Ha az adatbázis vagy a felhasználó már létezik, annak meglévő beállításait használd. Ez a példa a helyi telepítéshez ad jogosultságot, nem szervezeti üzemeltetési szabályzat.
+
+Ezután a projekt gyökerében:
 
 ```bash
 npm run db:init
 ```
 
-Indítás fejlesztői módban (API + Vite, automatikus újratöltéssel):
+A szkript létrehozza a hiányzó táblákat és a kezelt indexeket, feltölti a hiányzó rendszerpályákat, a régi nevükön megtalált rendszerpályák nevét és leírását pedig frissíti. Megtartja az azonosítókat, a pályaadatokat és a hozzájuk kapcsolódó futásokat. A saját térképeket nem módosítja.
+
+Ha az adatbázis létrehozását is a szkriptre bízod, megfelelő jogosultságú kapcsolat szükséges. A `DB_ADMIN_USER` és `DB_ADMIN_PASSWORD` opcionális változók megadásakor a teljes `db:init` ezekkel a hitelesítési adatokkal fut; az alkalmazás normál működéséhez továbbra is a `DB_USER` és `DB_PASSWORD` értékei használatosak.
+
+### 3. Indítás
 
 ```bash
 npm run dev
 ```
 
-- Web: <http://localhost:5173>
-- API: <http://localhost:3000/api/health>
+- Felület: [localhost:5173](http://localhost:5173)
+- API és adatbázis-kapcsolat ellenőrzése: [localhost:3000/api/health](http://localhost:3000/api/health)
 
-A `db:init` idempotens: a már létező rendszer-térképeket nem duplikálja. Az adatbázist a fenti SQL hozza létre; ha mégis a `db:init`-re bíznád a létrehozást, és a felhasználó nem rendelkezik `CREATE DATABASE` joggal, add meg a `DB_ADMIN_USER` és `DB_ADMIN_PASSWORD` értékeket is a `server/.env` fájlban; a szkript ezekkel hozza létre az adatbázist.
+A gyökérszintű parancs együtt indítja az API-t és a Vite fejlesztői szervert. Csak a kliens elindítása nem elég a regisztrációhoz, mentéshez és ranglistához. A MySQL szolgáltatásnak is futnia kell.
 
-### Éles build helyben
+A közös `shared` csomag a fejlesztői indítás elején fordul le. Ha ennek forrását módosítod, indítsd újra a gyökérszintű `npm run dev` parancsot, hogy az új motorverzió betöltődjön.
+
+### A buildelt alkalmazás kipróbálása helyben
+
+A konfiguráció és az adatbázis előkészítése után:
 
 ```bash
-npm ci
 npm run build
-npm run db:init
 npm start
 ```
 
-Ekkor a teljes alkalmazás a <http://localhost:3000> címen érhető el: az Express szerver szolgálja ki a `client/dist` statikus buildet és az `/api` végpontokat.
+A teljes alkalmazás a [localhost:3000](http://localhost:3000) címen érhető el. Az Express a `client/dist` tartalmát és az API-végpontokat is kiszolgálja. Az `npm start` önmagában nem állítja át a `NODE_ENV` értékét éles módra.
 
-## Hogyan használd?
+## Használat
 
-1. **Regisztrálj** a kezdőlapon, vagy lépj be egy meglévő fiókkal.
-2. A **Térképek** oldalon válassz pályát. A rendszer-térképek mellett saját és mások által közzétett nyilvános pályák is megjelennek.
-3. A pálya oldalán tölts be egy **mintaprogramot**, írj sajátot, vagy importálj fájlt.
-4. Nyomd meg a **Futtatás** gombot. Az animáció közben látszik a robot, a felfedezett terület, az arany, az aktuális sor és a konzol. A futás leállítható.
-5. A futás végén a szerver **hitelesíti** az eredményt; sikeres hitelesítés után frissül a ranglista és a profil.
-6. **Térképszerkesztéshez** nyisd meg a saját pályát, vagy válaszd az „Új térkép építése” lehetőséget. A szerkesztő importálja és exportálja is a szöveges térképformátumot.
-7. A **Profil** oldalon visszakeresheted a futásaidat, és bármelyik korábbi programot visszatöltheted a szerkesztőbe.
+1. Regisztrálj vagy jelentkezz be.
+2. A **Térképek** oldalon keress vagy válassz egy elérhető pályát.
+3. A **Robotprogram** panelen válassz mintát vagy **Saját program** módot. A kód közvetlenül szerkeszthető és fájlból is importálható. Egy minta kézi módosítása saját programmá válik.
+4. Indítsd el a futást a **Futtatás** gombbal vagy a **Ctrl+Enter**, macOS-en **Cmd+Enter** billentyűkkel.
+5. Kövesd az animációt, válts sebességet, vagy állítsd le a lejátszást. Az utolsó arany kibányászása automatikusan befejezi a programot.
+6. A befejezett futást a szerver újrafuttatja és menti; sikeres mentés után a ranglista frissül. A kézzel megszakított animáció részeredményét a felület nem küldi be mentésre.
+7. A **Pályaműhelyben** készíts új térképet, vagy a saját pályádnál válaszd a szerkesztést.
+8. A **Bányásznaplóban** nézd meg a korábbi futásokat, és tölts vissza egy programot.
 
-### Fontos játékszabályok
+A kódszerkesztőben a Tab és Shift+Tab a behúzást kezeli. A fókusz továbbléptetéséhez előbb nyomj Esc-et, majd Tabot. A térképszerkesztő mezői nyílbillentyűkkel bejárhatók, Enterrel vagy szóközzel festhetők.
 
-- A robot csak a **közvetlenül előtte** lévő mezőt érzékeli `isThere` hívással; a térkép felfedezetlen részeit a felület nem árulja el.
-- A `step forward` utasítás egy végrehajtás alatt akár több mezőt is halad, de **minden feldolgozott programsor egy lépésnek** számít.
-- A futás legfeljebb **1000 feldolgozott programsorig** tart; a 1001. sor feldolgozása előtt `INSTRUCTION_COUNT_LIMIT_EXCEEDED` hibával megszakad.
-- Hibás program nem futtatható: a szintaktikai ellenőrzés megjelöli a hibás sort.
-- A futásidejű hibák is bekerülnek a futástörténetbe, de a ranglistán a legjobb eredmény szerepel.
-- Ha egy térképen már született futás, a **pálya tartalma nem módosítható**, csak a neve, leírása és láthatósága. Ez védi a ranglista hitelességét.
+## A jelenlegi játék működési szabályai
+
+- Az `isThere` a robot közvetlenül előtti mezőt vizsgálja. A térképen kívüli terület falnak számít.
+- A felület halvány nézetben előre megmutathat falakat és aranyat. Ez megjelenítési segítség: a MineScript-program nem kap közvetlen hozzáférést a teljes térképhez vagy a felület felfedezési adataihoz.
+- A `step forward` több mezőt is megtehet egyetlen utasításként. A ranglistán használt lépésszám a **feldolgozott programsorok száma**, nem a megtett mezőké. A ciklus feltételsora minden vizsgálatkor számít, a végrehajtott `else` sor szintén számít.
+- Egy futás legfeljebb **1000 feldolgozott programsorig** tart. A következő sor feldolgozása előtt `INSTRUCTION_COUNT_LIMIT_EXCEEDED` hibával megszakad.
+- Az utolsó aranyrög kibányászásakor a futás azonnal, sikeresen véget ér. Az utána következő utasítások, így a további `print` vagy értékadó sorok sem hajtódnak végre. Arany nélküli pályán a program továbbra is futtatható.
+- Szintaktikailag hibás program nem indul el. Futásidejű hiba esetén a már elért eredmény megmarad, és a befejezett futás a hiba adataival együtt menthető.
+- Ha egy pályához már tartozik mentett futás, a rácsa, mérete és robotkezdőállapota nem módosítható. A tulajdonos a nevet, leírást és láthatóságot továbbra is szerkesztheti.
+- Egy térkép törlése a hozzá tartozó mentett futásokat is törli az adatbázisból.
 
 ## MineScript nyelv
 
-A nyelv sororientált és behúzásvezérelt. Egy sor egy utasítás; a tokeneket pontosan egy szóköz választja el, a behúzás csak szóköz lehet. Üres sor nem megengedett. A kulcsszavak kis- és nagybetűérzékenyek.
+A nyelv sororientált és behúzásvezérelt. Az utasítás tokenjeit pontosan egy szóköz választja el; a behúzás csak szóközökből állhat. Az egymásba ágyazott blokkok következetes behúzást igényelnek. A kulcsszavak kis- és nagybetűérzékenyek. Az üres program elfogadott, de egy nem üres program belsejében nem lehet üres sor.
+
+Az alábbi példa egyenesen halad a falig, és közben kibányássza az útjába kerülő aranyat. Nem általános labirintusmegoldó:
 
 ```text
-set count to 0
 set fal to isThere 1
-set megy to not fal
-while megy
+set mehet to not fal
+while mehet
   set arany to isThere 2
+  step forward 1
   if arany
-    step forward 1
     mine here
-    set count to count + 1
-  else
-    step forward 1
   set fal to isThere 1
-  set megy to not fal
-print count
+  set mehet to not fal
 ```
 
-| Utasítás | Jelentés |
+| Utasítás vagy kifejezés | Jelentés |
 | --- | --- |
-| `step forward <érték>` | Előrehaladás nemnegatív egész számmal; fal vagy térképszél esetén `E_BEDROCK_HIT`. |
-| `turn by <érték>` | Balra fordulás ennyi negyedfordulattal (0–3 hatás). |
-| `mine here` | Az aktuális mező aranyának begyűjtése; arany nélkül `E_NO_GOLD`. |
+| `step forward <érték>` | Előrehaladás nemnegatív egész számú mezővel. Fal vagy térképszél esetén `E_BEDROCK_HIT`. |
+| `turn by <érték>` | Balra fordulás nemnegatív egész számú negyedfordulattal; az irányt a néggyel vett maradék határozza meg. |
+| `mine here` | Az aktuális mező aranyának kibányászása. Arany nélkül `E_NO_GOLD`. |
 | `print <érték>` | Egész vagy logikai érték kiírása a konzolra. |
-| `set <név> to <kifejezés>` | Változó létrehozása vagy értékadás; a típus az első értékadáskor rögzül. |
-| `if <érték>` / `else` | Elágazás logikai feltétellel. |
-| `while <érték>` | Ciklus logikai feltétellel. |
-| `isThere <0\|1\|2>` | Üres / fal / arany vizsgálata a robot előtti mezőn; a térképen kívül falnak számít. |
+| `set <név> to <kifejezés>` | Változó létrehozása vagy értékadás. A típus az első értékadáskor rögzül. |
+| `if <érték>` / `else` | Elágazás logikai érték vagy változó alapján. |
+| `while <érték>` | Ciklus logikai érték vagy változó alapján. |
+| `isThere <érték>` | `set` jobb oldalán használható vizsgálat: 0 = üres, 1 = fal, 2 = arany. |
 
-Kifejezések: `+ - *`, `< <= > >=`, `= <>`, `and or not`. Számliterál csak 0 és 100 közötti egész lehet; beágyazott zárójeles kifejezés nincs. A feltételek egyetlen egyszerű értéket fogadnak el, ezért összetett feltételt előbb változóba kell menteni.
+Operátorok: `+`, `-`, `*`, `<`, `<=`, `>`, `>=`, `=`, `<>`, `and`, `or`, `not`.
+
+A forrásba írt számliterál csak 0–100 közötti egész lehet; a számított változóértékek ettől eltérhetnek. Nincs zárójeles, egymásba ágyazott kifejezés. Az `if` és a `while` feltétele egyetlen egyszerű érték, ezért összehasonlítást előbb változóba kell menteni:
+
+```text
+set db to 4
+set kesz to db = 4
+if kesz
+  print db
+```
 
 Futásidejű hibakódok: `E_TYPE_MISMATCH`, `E_UNINITIALIZED`, `E_NON_BOOL_CONDITION`, `E_BAD_OPERAND`, `E_BEDROCK_HIT`, `E_NO_GOLD`, `E_BAD_ARG`, `INSTRUCTION_COUNT_LIMIT_EXCEEDED`.
 
-## Architektúra
+## Térképformátum
+
+Az első sor a sorok és oszlopok száma, ebben a sorrendben. Ezután pontosan a megadott számú, megfelelő hosszúságú rácssor következik. Mindkét méret 1–15 közötti lehet, és pontosan egy robot szükséges.
+
+- `.`: üres mező
+- `#`: fal
+- `@`: aranyrög
+- `>`, `<`, `^`, `v`: robot és kezdőiránya
+
+Példa:
 
 ```text
-duszaverseny/
-├─ shared/   MineScript típusok, térképformátum, parser, interpreter, demótérképek
-├─ server/   Express + MySQL REST API, JWT-hitelesítés, statikus kliens kiszolgálása
-├─ client/   React + TypeScript + Vite egyoldalas alkalmazás
-├─ deploy/   systemd és Apache konfiguráció
-└─ docs/     beadandó leírás és telepítési útmutató
+3 5
+#####
+#>@.#
+#####
 ```
 
-A `shared` csomag az egyetlen igazságforrás a nyelvhez: ugyanaz a parser és interpreter fut a böngészőben az animációhoz és a szerveren a hitelesítéshez. Ez kizárja, hogy a két oldal eltérően értelmezze a programot. A szerver soha nem fogadja el a kliens által jelentett arany-/lépésszámot, hanem a beküldött forráskódból újraszámolja.
+A térkép szintaktikai érvényessége önmagában nem garantálja, hogy minden arany elérhető vagy a pálya megoldható az 1000 soros kereten belül.
 
-**Miért Node.js és nem PHP?** A célkörnyezetben PHP is rendelkezésre áll, de a feladat lényege egy összetett interpreter és egy élő animáció. A Node.js lehetővé teszi, hogy a parser/interpreter **egyetlen TypeScript-implementáció** legyen, amelyet a kliens és a szerver is használ. Így nincs két, egymástól elcsúszó nyelvi implementáció, és a szerver hitelesítése pontosan azt a szemantikát követi, amit a játékos lát. A Node-szerver Apache reverse proxy mögött fut, a célkörnyezet többi eleme (MySQL, Apache, HTTPS) változatlanul használható.
+## Architektúra
+
+- `shared/`: MineScript-típusok, térképformátum, parser, interpreter és rendszerpályák.
+- `server/`: Express + MySQL REST API, JWT-hitelesítés, a buildelt kliens kiszolgálása.
+- `client/`: React + TypeScript + Vite alkalmazás; a helyben kiszolgált képek a `client/public/assets/` mappában vannak.
+- `deploy/`: systemd- és Apache-konfigurációminták.
+- `docs/`: projektleírás, telepítési és frissítési útmutatók.
+
+A böngésző és a szerver ugyanazt a `shared` parser- és interpreter-implementációt használja. Ez csökkenti a két végrehajtás eltérésének kockázatát; telepítéskor mindkét oldalt ugyanabból a forrásverzióból kell buildelni. A böngésző kiszámítja és lejátssza a futást, a szerver pedig ettől függetlenül újraszámolja a mentendő eredményt.
+
+A Node.js használatának fő oka a közös TypeScript-motor. A versenyszerveren az alkalmazás Apache reverse proxy mögött futtatható; a külső HTTPS-forgalmat az Apache továbbítja a helyi Node-szervernek.
 
 ### API-végpontok
 
 | Metódus | Útvonal | Leírás |
 | --- | --- | --- |
-| `GET` | `/api/health` | Adatbázis-kapcsolat ellenőrzése. |
-| `POST` | `/api/auth/register` | Regisztráció, munkamenet-cookie beállítása. |
-| `POST` | `/api/auth/login` | Bejelentkezés. |
-| `POST` | `/api/auth/logout` | Kijelentkezés. |
-| `GET` | `/api/auth/me` | Aktuális felhasználó. |
-| `GET` | `/api/maps` | Látható térképek listája. |
-| `POST` | `/api/maps` | Új térkép létrehozása. |
-| `GET` | `/api/maps/:id` | Térkép részletei. |
-| `PUT` | `/api/maps/:id` | Térkép módosítása (tulajdonos). |
-| `DELETE` | `/api/maps/:id` | Térkép törlése (tulajdonos). |
-| `GET` | `/api/maps/:id/leaderboard` | Térkép ranglistája. |
-| `POST` | `/api/runs` | Program beküldése; szerveroldali újrafuttatás és mentés. |
-| `GET` | `/api/runs/mine` | Saját futások és statisztikák. |
-| `GET` | `/api/runs/:id` | Egy futás (tulajdonos vagy térképtulajdonos). |
+| GET | `/api/health` | Az API és az adatbázis-kapcsolat ellenőrzése. |
+| POST | `/api/auth/register` | Regisztráció és munkamenet létrehozása. |
+| POST | `/api/auth/login` | Bejelentkezés. |
+| POST | `/api/auth/logout` | Kijelentkezés. |
+| GET | `/api/auth/me` | Az aktuális felhasználó lekérése. |
+| GET | `/api/maps` | Az elérhető térképek listája. |
+| POST | `/api/maps` | Új térkép létrehozása. |
+| GET | `/api/maps/:id` | Egy elérhető térkép részletei. |
+| PUT | `/api/maps/:id` | Saját térkép módosítása. |
+| DELETE | `/api/maps/:id` | Saját térkép és kapcsolódó futásainak törlése. |
+| GET | `/api/maps/:id/leaderboard` | Egy elérhető térkép ranglistája. |
+| POST | `/api/runs` | Program szerveroldali futtatása és eredményének mentése. |
+| GET | `/api/runs/mine` | Saját futások és összesített statisztikák. |
+| GET | `/api/runs/:id` | Futás lekérése a futás tulajdonosának vagy a térkép tulajdonosának, az elérhetőségi ellenőrzés mellett. |
 
-A térkép- és futásvégpontok, valamint a `/api/auth/me` bejelentkezést igényelnek. A munkamenet HttpOnly, `SameSite=Lax` cookie-ban utazik; a jelszavak bcrypt hashként tárolódnak.
+A térkép- és futásvégpontok, valamint az `/api/auth/me` bejelentkezést igényelnek. Privát térképhez a tulajdonosa fér hozzá. A beküldött program legfeljebb 20 000 karakter lehet.
 
 ## Fejlesztés és ellenőrzés
 
 ```bash
-npm test          # a közös parser/interpreter/térkép tesztek (Vitest)
-npm run typecheck # shared, server és client TypeScript-ellenőrzés
-npm run build     # teljes éles build
+npm test
+npm run typecheck
+npm run build
 ```
 
-A tesztek lefedik a térképformátumot, a parser hibakezelését, a futásidejű szemantikát, a lépésszámolást, az 1000 soros limitet és a demótérképek érvényességét.
+A legutóbbi dokumentált egységteszt-futásban **73 teszt** sikerült. A tesztek a térképkezelést, a parsert, az interpretert, a feldolgozott sorok számolását, a futási korlátot, az utolsó arany utáni leállást, a futásadatok hozzáférési ellenőrzését és az új mesterpálya megoldhatóságát is érintik.
 
-## Ismert korlátok / nem készült el
+A fejlesztés során ideiglenes Playwright-szkriptekkel, mock API mellett automatizált böngészős próbák is készültek. Ezek között szerepelt asztali és mobilos megjelenés, futás közbeni sebességváltás, saját program megőrzése, menük, havazás és térképszerkesztés. Ezek nem részei a projekt `npm test` parancsának, és nem helyettesítik a valódi adatbázissal végzett végponttól végpontig tartó tesztelést.
 
-- Nincs jelszó-visszaállítás, e-mail-verifikáció, fióktörlés és adminisztrátori moderáció.
-- Nincs valós idejű többjátékos mód; a ranglista esemény után, kérésre frissül.
-- A ranglista felhasználónként a legjobb futást mutatja, nem az összes futást.
-- A profil csak a legutóbbi 50 futást tölti be.
-- A szerkesztő piszkozatai böngészőnként, `localStorage`-ban maradnak meg, nem szinkronizálódnak.
-- Nincs migrációs keretrendszer; a `db:init` idempotens sémainicializálást végez.
-- A felület magyar nyelvű; nincs többnyelvű választó.
-- Automatizált böngészős end-to-end teszt nem készült; a megosztott motor egységtesztjei, a TypeScript-ellenőrzés és az éles build futnak.
+A helyi MySQL-inicializálás és a rendszerpályák frissítése sikeresen lefutott. Teljes körű, éles környezetű végső integrációs tesztet nem dokumentáltunk.
 
-## További ötletek
+## Ismert korlátok
 
-- Térkép „forkolása” és verziózása, hogy a ranglista mellett a pályák változásai is nyomon követhetők legyenek.
-- Felhasználói megoldások megosztása és megtekintése a ranglistából.
-- Napi kihívás és szezonális ranglista.
-- Automatikus megoldás-ellenőrző mód a tanároknak.
-- Hang- és részecskeanimációk, illetve akadálymentes „csökkentett mozgás” beállítás.
-- Angol nyelvű felület és beküldési lehetőség.
+- Nincs jelszó-visszaállítás, e-mail-ellenőrzés, fióktörlési felület vagy adminisztrátori moderáció.
+- Nincs valós idejű többjátékos mód vagy automatikusan frissülő élő ranglista.
+- A profil a legutóbbi 50 futást listázza; a ranglista játékosonként a legjobb eredményt mutatja.
+- A programpiszkozatok böngészőben, pályaazonosító szerint tárolódnak. Nem szinkronizálódnak eszközök között, és ugyanazon böngészőben nincsenek felhasználói fiókonként elkülönítve.
+- Nincs általános migrációs keretrendszer. A `db:init` a benne kezelt táblákat, indexeket és rendszerpályákat készíti elő, de nem végez tetszőleges sémamigrációt.
+- A felület magyar nyelvű.
+- Nincs beépített, minden térképet automatikusan megoldó keresőprogram; az 1000 soros korlát és a pálya szerkezete is számít.
+- A fejlesztéskor használt ideiglenes böngészős tesztek nem alkotnak önálló, a projekttel együtt telepített E2E-tesztcsomagot.
 
-## Telepítés
+## További fejlesztési lehetőségek
 
-Részletes Ubuntu 22.04 + Apache + MySQL útmutató: [docs/deployment.md](docs/deployment.md).
+- Térképmásolás és verziózás a korábbi eredmények megőrzésével.
+- Megoldások megosztása a játékos döntése alapján.
+- Napi kihívások és szezonális ranglista.
+- Kapcsolható hanghatások.
+- Fiókhoz kötött, eszközök között szinkronizált programpiszkozatok.
+- Angol nyelvű felület.
+- Tartós, valódi adatbázissal futó automatizált integrációs tesztek.
 
-A beadandó rövid projektleírás: [docs/beadando.md](docs/beadando.md).
+## Telepítés és kapcsolódó dokumentáció
+
+- [Ubuntu, Apache és MySQL telepítési útmutató](docs/deployment.md)
+- [Rövid projektleírás](docs/beadando.md)
+- [Expedíciós frissítés és meglévő telepítés frissítése](docs/expedition-update.md)
+- [A hat rendszerpálya külön SQL-importja](server/sql/rendszerpalyak-import.sql)
+
+HTTPS-es éles telepítésnél a környezethez igazítva állítsd be a `NODE_ENV=production`, `COOKIE_SECURE=true` és az Apache proxy esetén a `TRUST_PROXY=1` értékeket. Az SSH- és tűzfalbeállításokat a versenyszerver üzemeltetési előírásainak megfelelően hagyd változatlanul.
+
+A külön SQL-import a meglévő `maps` táblába tölti a hiányzó alappályákat. A régi néven már létező rendszerpályákat kihagyja; az átnevezést és leírásfrissítést a `npm run db:init` végzi.
+
+## AI-közreműködés
+
+A fejlesztésben AI-eszközöket is használtunk: felülettervezésre, kódmódosításokra, illusztrációkra, hibakeresésre, ellenőrzésekre és dokumentációra. A felhasználás részleteit, az ellenőrzéseket és a hibás javaslatokat a beadáshoz készített külön AI-használati nyilatkozat ismerteti.

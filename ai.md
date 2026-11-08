@@ -1,73 +1,130 @@
 # AI-használati nyilatkozat
 
-**Projekt:** MineScript – bányászrobot szimulátor  
 **Verseny:** Dusza Árpád Országos Programozói Emlékverseny, 2026/2027, I. forduló  
-**Csapat:** három fős verseny-csapat  
-**Dátum:** 2026. november 7.
 
-## 1. Milyen AI-eszközöket és modelleket használtam?
+**Csapat:** Bugvadászok
 
-- **OpenCode** – AI-vezérelt fejlesztői ügynök (az OpenCode asztali alkalmazás aktuális verziója; a munkamenet nem jelentett meg külön verziószámot).
-- **DeepSeek V4.1 Flash Free** – nyelvi modell (szolgáltató: `opencode`, modellazonosító: `deepseek-v4.1-flash-free`).
+**Dátum:** 2026. november 8.
 
-A munkamenet során nem használtunk más generatív AI-eszközt vagy modellt.
+## 1. Milyen AI-eszközöket használtunk?
 
-## 2. Mire használtunk az AI-t, és körülbelül mekkora részben?
+A fejlesztés különböző szakaszaiban az alábbi eszközöket használtuk:
 
-Az AI-t elsősorban a **megjelenítési réteg újratervezésére**, néhány kliensoldali komponens átalakítására, valamint a **backend és az adatbázis célzott átvizsgálására és optimalizálására** használtuk.
+- **OpenCode**, a korábbi munkamenetben megadott **DeepSeek V4.1 Flash Free** modellel. A feljegyzett szolgáltatóazonosító `opencode`, a modellazonosító `deepseek-v4.1-flash-free` volt.
+- **OpenAI Codex**, az asztali alkalmazáson keresztül, a meglévő projekt átvizsgálására, módosítására és ellenőrzésére. A munkához használt pontos modellverziót nem rögzítettük.
+- A Codexben elérhető **beépített képgeneráló eszköz**, a bányászós és téli hangulatú illusztrációk elkészítésére. A képgeneráló pontos modellazonosítóját nem rögzítettük.
 
-Konkrétan AI-segítséggel készült:
+Az AI használata beszélgetéses segítséget, közvetlen forráskód-módosítást, képgenerálást és automatizált ellenőrzések futtatását is jelentette.
 
-- a teljes `client/src/styles/` CSS designrendszer újraírása és témák szerinti fájlokra bontása (színtokenek, tipográfia, elrendezés, kártyák, űrlapok, térképnézet, kódszerkesztő, ranglista, reszponzív töréspontok, animációk, csökkentett mozgás támogatása);
-- a `Logo` komponens kiemelése, a fejléc és a belépőoldal frissítése, favicon készítése;
-- a `ProgramEditor` újraírása szintaxiskiemelő átfedéssel, görgetésszinkronnal, Tab/Shift+Tab behúzással, automatikus behúzással és Ctrl/Cmd+Enter gyorsparanccsal;
-- a `MapView` robotméret-hibájának javítása nem négyzetes térképeken, valamint a térkép látogatási módainak (alapértelmezett halvány fal/arany és a teljes sötétség opció) stílusának beállítása;
-- a játékoldal jelmagyarázatának, aranyhaladás-sávjának és gyorsparancsának hozzáadása;
-- a térképlista keresőtörlésének és kártyagrafikájának javítása;
-- backend-oldali lekérdezés-optimalizálások, tömörítés, cache-fejlécek, indexmigráció és bejelentkezési időzítés elleni védelem;
-- a dokumentáció és ez a nyilatkozat.
+## 2. Mire használtuk az AI-t?
 
-A program **funkcionális magja** (a közös parser, interpreter, térképfeldolgozó motor, az API alapstruktúrája és az eredeti adatbázisséma) nem ebben a munkamenetben készült, ezért ahhoz az AI csak célzott, kis módosításokat végzett. A jelenlegi forráskódbázis **kb. 35–40%-a** érintett AI-segítséggel; ezen belül a CSS gyakorlatilag teljes egészében AI-val készült, a TypeScript-kód kisebb részben (főleg a felsorolt komponensek és a szerveroptimalizálások).
+### Meglévő alkalmazás átvizsgálása és javítása
 
-Nem használtunk AI-t a versenyfeladat értelmezésére, a játékszabályok eldöntésére, a meglévő tesztek elvárásainak megváltoztatására, illetve arra, hogy a program viselkedését ellenőrzés nélkül elfogadjuk.
+Az AI használatakor már rendelkezésre állt egy működő projekt. A közös parser, interpreter, térképfeldolgozó, az API alapstruktúrája és az adatbázisséma nem a későbbi Codex-munkamenetben készült. Ezeket az AI átvizsgálta, és egyes részeiken célzott módosításokat végzett.
 
-## 3. Hogyan ellenőriztük és javították az AI eredményét?
+A korábbi OpenCode-munkamenetben AI-segítséget vettünk igénybe többek között:
 
-- **Típusellenőrzés:** `npm run typecheck` – a shared, a server és a client csomag is hibamentesen lefordult.
-- **Egységtesztek:** `npm run test` – 67 teszt futott le sikeresen (parser, interpreter, térképkezelés).
-- **Éles build:** `npm run build` – a Vite build elkészült; a CSS mérete az eredeti ~3 KB-ról ~43,5 KB-ra nőtt, ami visszaigazolja, hogy a hiányzó stílusok pótlásra kerültek.
-- **Biztonsági audit:** `npm audit --omit=dev` – 0 termelési sebezhetőség.
-- **Böngészős manuális ellenőrzés:** ideiglenes mock API-val kipróbáltuk a belépést, a térképlistát, a játékoldalt (futtatás, aranyhaladás, konzol, ranglista), a profilt és a térképszerkesztőt. Ellenőriztük a 919 px széles (tablet) elrendezést is.
-- **Hibajavítások az ellenőrzés után:**
-  - a szintaxiskiemelő első változata a globális `code` stílus egy sorral eltolta; ezt CSS-resettel javították, majd böngészőben újra ellenőrizték;
-  - a csákány-logó első vonalas változata kicsiben nem volt felismerhető, ezért letisztultabb, nagyobb kontrasztú ikonra cserélték;
-  - a mobilos töréspontoknál a statisztikakártyák és a gombok tördelését kézzel finomították;
-  - a térképen a halvány falak és aranyok túlreztek voltak, ezért a `.map-cell-faint-*` stílusok átállítókra kerültek, hogy alapértelmezésben látszódjanak, de halványak maradjanak; a „teljes sötétség” módban a felderítetlen mezők teljesen sötétek.
+- a CSS-stílusrendszer kialakításához és fájlokra bontásához;
+- a kódszerkesztő szintaxiskiemeléséhez, behúzáskezeléséhez és gyorsparancsaihoz;
+- a nem négyzetes térképeken megjelenő robot méretének javításához;
+- a térképlista és a játékoldal megjelenítéséhez;
+- szerveroldali lekérdezések, tömörítés, gyorsítótárazási fejlécek és adatbázisindexek átalakításához;
+- a bejelentkezés időzítéskülönbségének mérsékléséhez;
+- a dokumentáció elkészítéséhez.
 
-**Korlát:** a gépen nem futott MySQL szolgáltatás, ezért a valódi adatbázis ellen a teljes integrációs teszt nem volt elvégezhető. A SQL-módosításokat (indexek, idempotens migráció, lekérdezések) típusellenőrzéssel és kódolvasással validáltuk, a felületet pedig mock API-val. Élesítés előtt kötelezőnek tartjuk a `npm run db:init` futtatását és egy valódi adatbázisos füsttesztet.
+### A felület teljes vizuális átdolgozása
+
+A Codexszel végzett munka során a felület újabb, jelentős áttervezést kapott. A téli, bányászós hangulatot és az átalakítás irányát mi kértük; az AI ezek alapján készítette el a módosításokat.
+
+AI-segítséggel készült:
+
+- a belépőoldal, a térképlista, a játékoldal, a profil és a pályaszerkesztő átdolgozása;
+- az oldalsó navigáció és a mobilos elrendezés;
+- az antracit- és palaszürke alapra, arany kiemelésekre épülő színvilág;
+- az új bányászrobot-grafika és a térképmezők megjelenítése;
+- a havas bányabejáratot ábrázoló nyitókép és 15 térképkártya-illusztráció;
+- a több rétegből álló, szélben sodródó havazás.
+
+A havazás kikapcsolható, illetve finom és sűrű fokozatban használható. A beállítást az alkalmazás megjegyzi. Az animáció háttérbe tett böngészőlapon szünetel, csökkentett mozgásra vonatkozó rendszerbeállítás esetén nem jelenik meg.
+
+A megjelenést több körben módosítottuk a saját visszajelzéseink alapján. Ilyen változtatás volt a világos belépési panel visszaállítása sötétre, a zöldes háttér elhagyása, a sűrű havazás erősítése és a hópelyhek megjelenítési sorrendjének javítása.
+
+### Működési változtatások
+
+Az AI a kérésünkre a program működését is módosította:
+
+- Az utolsó aranyrög kibányászása sikeresen lezárja a futást, beágyazott ciklusban is. Ez a közös futtatómotorban történt, így a kliens és a szerver ugyanazt a szabályt alkalmazza.
+- Az „Azonnali” sebesség futás közbeni kiválasztása közvetlenül a kész végállapotra vált.
+- A mintaprogram- és havazásválasztó új, billentyűzettel is kezelhető menüt kapott.
+- Javítottuk azt a hibát, amely miatt a lenyíló használata felfelé görgette az oldalt.
+- Minden térképen megjelent a „Saját program” lehetőség. A saját kód pályánként megmarad mintaváltás és oldalfrissítés után is.
+- Az alappályák új neveket kaptak, és elkészült az „Örökfagy labirintusa” nevű, 15 × 15 mezős, 18 aranyrögös pálya.
+- Elkészült a rendszerpályák adatbázis-frissítése és külön SQL-importfájlja.
+
+A futás automatikus befejezése viselkedésváltozás volt, nem pusztán megjelenítési javítás. A kapcsolódó tesztelvárást ennek megfelelően módosítottuk.
+
+### Segítség a fejlesztéshez és a MineScript-programokhoz
+
+Az AI segített a helyi indítás, a PowerShell-parancsok, a szerverkapcsolat és a MySQL beállításának hibakeresésében.
+
+Külön bemásolható MineScript-programokat is kértünk tőle. Ezek nem mind kerültek be az alkalmazásba. Az AI több falkövető megoldást javasolt, majd egy általunk megadott keresőprogramot optimalizált és összehasonlító próbákat futtatott vele.
+
+Az AI közreműködésének pontos százalékát nem tudjuk hitelesen meghatározni. A vizuális rétegben jelentős volt a szerepe, de TypeScript-kódot, teszteket, adatbázis-kezelést, illusztrációkat és dokumentációt is érintett.
+
+## 3. Hogyan ellenőriztük az eredményeket?
+
+Az ellenőrzések egy részét az AI-ügynök futtatta, más részét mi végeztük a helyi alkalmazás használatával.
+
+- **Típusellenőrzés:** a `npm run typecheck` parancsot többször lefuttattuk, a felmerült hibákat javítottuk.
+- **Egységtesztek:** a korábbi feljegyzésben 67 sikeres teszt szerepelt. A későbbi javításokkal és új tesztekkel a tesztkészlet 73 sikeres tesztre bővült.
+- **Build:** a `npm run build` sikeresen elkészítette a szerver és a kliens futtatható változatát.
+- **Böngészős próbák:** automatizált, tesztadatokat szolgáltató API-val végzett ellenőrzések készültek asztali és mobilos méretben. Ezek érintették a fő oldalakat, a futtatást, a sebességváltást, a pályaszerkesztést, a havazást, a menük kezelését és a saját program megőrzését.
+- **Saját kipróbálás:** helyben használtuk az alkalmazást, és képernyőképekkel jeleztük a hibákat. Több javítás ezekből a visszajelzésekből indult.
+- **Adatbázis:** a korábbi munkamenetben még nem állt rendelkezésre helyi MySQL. Később telepítettük és beállítottuk; a rendszerpályák frissítése és az új pálya létrehozása valódi helyi adatbázison is sikeresen lefutott.
+- **Pálya és keresőprogram ellenőrzése:** automatizált próba igazolta, hogy az új mesterpálya összes aranya elérhető és megfelelő útvonallal az 1000 soros kereten belül összegyűjthető. A külön kért keresőprogramokat a közös motorral futtattuk le.
+
+A korábbi feljegyzés szerint a `npm audit --omit=dev` akkor nem jelzett termelési függőségi sebezhetőséget. Ez nem jelent teljes körű biztonsági vizsgálatot.
+
+A mock API-val végzett böngészős próbák nem helyettesítik a teljes, valódi adatbázissal végzett integrációs tesztet. Ilyen teljes körű végső ellenőrzést nem dokumentáltunk. A CSS-fájl méretének növekedését önmagában nem tekintjük a minőség bizonyítékának.
 
 ## 4. Öt konkrét eset
 
-### 1. eset – A teljes CSS designrendszer újraírása (sikeres)
+### 1. Téli megjelenés és illusztrációk – sikeres, több módosítással
 
-A kiinduló `styles.css` mindössze ~170 sor volt, miközben a komponensek több száz osztálynevet használtak, ezért az oldalak nagy része formázatlanul jelent meg. Az AI-val új, sötét bányász témájú, arany kiemelésű designrendszert készítettek: tokenek, elrendezés, kártyák, űrlapok, állapotjelzők, táblázatok, kódszerkesztő és reszponzív szabályok. **Ellenőrzés:** a build során a CSS ~43,5 KB lett, és böngészőben a belépő-, térkép-, játék-, profil- és szerkesztőoldal is helyesen jelent meg. **Eredmény:** sikerült; a legnagyobb vizuális hiányosság megszűnt.
+Az AI elkészítette az új bányászós felületet és a képeket. Az első változat egyes részei nem feleltek meg az elképzeléseinknek: túl kevés kép ismétlődött, a világos belépési panel és a zöldes háttér nem illett a kívánt hangulathoz, a két havazási fokozat között pedig kicsi volt a különbség.
 
-### 2. eset – Robotméret nem négyzetes térképen (sikeres)
+Ezeket jeleztük, az AI módosította a színeket, bővítette a képkészletet és erősítette a sűrű havazást. Az eredményt böngészős próbákkal és saját megtekintéssel ellenőriztük.
 
-A `MapView` a robot szélességét és magasságát is a `--cols` változóból számolta. Egy 15×3-as térképen ezért a robot magassága a térkép magasságának csak 1/15-e volt, míg a szélessége 1/15-e, így a robot négyzetes helyett összenyomottan jelent meg. Hozzáadták a `--rows` változót, és a magasságszámítást arra állították át. **Ellenőrzés:** a 15×3-as „Aranyér” pályán a robot a várt méretben és helyen jelent meg. **Eredmény:** sikerült.
+### 2. Futás közbeni sebességváltás – sikeres javítás
 
-### 3. eset – Szintaxiskiemelő szerkesztő és gyorsparancs (sikeres, egy javítással)
+Észrevettük, hogy normál futásról „Azonnali” módra váltva a program csak felgyorsult. Az AI feltárta, hogy az események továbbra is egyenként kerültek lejátszásra.
 
-A `ProgramEditor` korábban csak olvasható módban emelte ki a szintaxist, szerkesztés közben sima textarea volt. Az új változat átlátszó textarea fölötti kiemelő réteget, görgetésszinkront, sorszámozást, Tab/Shift+Tab behúzást, automatikus behúzást és Ctrl/Cmd+Enter futtatást kapott. Az első böngészős ellenőrzéskor a globális `code` elem paddingja miatt a kiemelés egy sorral elcsúszott; ezt a `.code-highlight code` stílus nullázásával javították. **Ellenőrzés:** a Tab két szóközt szúrt be, a Ctrl+Enter elindította a futást, a kiemelés pedig sorra illeszkedett. **Eredmény:** sikerült.
+A javított változat közvetlenül a már kiszámolt végállapotot jeleníti meg. Az ellenőrzés hosszabb program futása közben végzett sebességváltást is tartalmazott.
 
-### 4. eset – Backend- és adatbázis-optimalizálás (részben ellenőrzött)
+### 3. Leállás az utolsó aranynál – sikeres működésmódosítás
 
-Az AI átvizsgálta a szervert, és több pazarló műveletet talált: a térképlista a teljes `data` mezőt letöltötte, a térkép mentése külön `COUNT(*)` lekérdezést futtatott, a futásindítás pedig feleslegesen számolta a futásszámot. Ezek külön summary/detail/content lekérdezésekre bontottak, tömörítést és API `no-store` fejlécet tett be, a statikus assetekhez hosszú cache-t adtak, a lekérdezéseket előkészített rejtett paraméterezésre állították, valamint indexeket és idempotens `db:init` migrációt készítettek. **Ellenőrzés:** typecheck, 67 teszt és build sikeres; valódi MySQL hiányában azonban a lekérdezések futásidejű viselkedését nem sikerült mérni. **Eredmény:** a kód szintjén sikeres, éles adatbázison még füsttesztelendő.
+A kérésünkre az AI úgy módosította a közös interpretert, hogy az utolsó arany kibányászása után ne hajtsa végre a további utasításokat.
 
-### 5. eset – Bejelentkezési időzítés és hibás AI-feltételezés (részben sikertelen)
+Ehhez új tesztek készültek: ellenőrizték a beágyazott ciklusból való kilépést és azt is, hogy a program folytatódik, amíg maradt arany. Böngészőben rendszerpályán és saját pályát utánzó tesztadattal is ellenőriztük a viselkedést.
 
-A bejelentkezésnél a nem létező felhasználónév esetén a szerver azonnal hibát adott, létező felhasználónál viszont lefuttatta a bcrypt-összehasonlítást, így a válaszidőből következtethető volt a felhasználónév létezésére. Az AI javaslatára egy ismert, soha nem egyező dummy bcrypt-hash-sel minden esetben lefuttatták az összehasonlítást. **A részben sikertelen rész:** a helyes megoldás végleges ellenőrzéséhez valódi MySQL és időmérés kellett volna, ami a gépen nem volt elérhető; továbbá az AI első javaslata a rövid/üres felhasználóneveket még a bcrypt előtt utasította el, ami továbbra is hagy egy kisebb időzítéskülönbséget. Ezt a korlátot tudatosan vállalták, mert a gyakorlati kockázat kicsi, a felhasználónév-létezés pedig amúgy is kiderülhet regisztrációs próbával. **Eredmény:** a fő időzítési rés betömve, de az éles ellenőrzés hiányos.
+### 4. Lenyílók és saját program – sikeres, felhasználói hibajelzés alapján
 
-## 5. Összegzés
+A havazásmenü használatakor az oldal felfelé gördült. Jeleztük, hogy ez megnyitáskor és a lehetőségek közötti válogatáskor is előfordul.
 
-Az AI érdemi segítséget adott a felület újratervezésében és a backend célzott optimalizálásában, de a végső döntéseket, az ellenőrzést és a hibajavításokat a csapat végezte. A projekt funkcionális magja továbbra is a korábban elkészült, saját kódon alapul; az AI által generált részeket típusellenőrzéssel, tesztekkel, builddel és böngészős próbákkal ellenőrizték.
+Az AI módosította a fókusz- és görgetéskezelést, majd lefelé görgetett oldalon is ellenőrizte a menüt. Ezzel együtt bekerült a „Saját program” lehetőség, amelynek tartalma mintaváltás és frissítés után is megmarad.
+
+### 5. Általános keresőprogram – hibás javaslatok és részleges eredmény
+
+Az AI első falkövető kódja hibás MineScript-szintaxist tartalmazott: közvetlen összehasonlítást írt az `if` után. Ezt változóba mentett feltétellel javította.
+
+A következő változat nyílt területen körözött. Egy további módosítás eljutott a falig, de a faltól távoli aranyat kihagyhatta. A problémákat mi jeleztük képernyőképekkel. Ezek a javaslatok nem adtak általános megoldást.
+
+Később egy általunk megadott programot optimalizált az AI. Kivette belőle a fix négyaranyas célt és a felesleges számlálást. Az ellenőrzés szerint az első négy alappályát teljesítette, a két nehezebb pályán azonban elérte az 1000 soros korlátot. Ezt részleges eredménynek tekintjük, nem minden térképre működő megoldásnak.
+
+## 5. A csapat és az AI szerepe
+
+Mi adtuk meg a kívánt irányt, választottuk ki a megtartandó változtatásokat, próbáltuk ki az alkalmazást, és jeleztük a tapasztalt problémákat. Az AI jelentős mennyiségű kódot, képet és dokumentációt készített, valamint több ellenőrzést önállóan futtatott.
+
+Az AI javaslatait nem tekintettük automatikusan helyesnek. A munkában voltak szintaktikai hibák, nem megfelelő algoritmusok és újabb javítást igénylő felületi megoldások is. Az elfogadott változtatások ellenőrzéséhez típusellenőrzést, teszteket, buildet, böngészős próbákat és saját kipróbálást használtunk.
+
+Ez a nyilatkozat a rendelkezésünkre álló korábbi feljegyzést és a dokumentált Codex-munkamenetet foglalja össze. A projekt ezek előtti teljes fejlesztéstörténetéről nem állítjuk, hogy kizárólag AI nélkül készült.

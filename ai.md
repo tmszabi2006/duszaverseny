@@ -1,7 +1,9 @@
 # AI-használati nyilatkozat
 
 **Verseny:** Dusza Árpád Országos Programozói Emlékverseny, 2026/2027, I. forduló  
+
 **Csapat:** Bugvadászok
+
 **Dátum:** 2026. november 8.
 
 ## 1. Milyen AI-eszközöket használtunk?

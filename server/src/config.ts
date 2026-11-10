@@ -32,6 +32,7 @@ export const config = {
     user: process.env.DB_USER ?? 'minescript',
     password: process.env.DB_PASSWORD ?? '',
     database: process.env.DB_NAME ?? 'minescript',
+    ssl: process.env.DB_SSL === 'true',
     /** Egyidejű MySQL kapcsolatok felső korlátja. */
     poolSize: Math.max(2, Math.min(50, numberFromEnv('DB_POOL_SIZE', 10))),
   },

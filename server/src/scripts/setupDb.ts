@@ -40,6 +40,7 @@ async function main(): Promise<void> {
     port: config.db.port,
     user: process.env.DB_ADMIN_USER ?? config.db.user,
     password: process.env.DB_ADMIN_PASSWORD ?? config.db.password,
+    ssl: config.db.ssl ? { minVersion: 'TLSv1.2' } : undefined,
     multipleStatements: true,
     charset: 'utf8mb4',
   });
